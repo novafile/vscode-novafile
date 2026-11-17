@@ -1,8 +1,12 @@
-This extension is licensed under either of
+The extension code is licensed under either of
 
   * the European Union Public Licence, version 1.2 (LICENSE-EUPL), or
   * the Mozilla Public License, version 2.0 (LICENSE-MPL),
 
 at your option.
 
-SPDX-License-Identifier: EUPL-1.2 OR MPL-2.0
+The grammar definitions (syntaxes/*.tmLanguage.json and their generator,
+scripts/build-grammars.mjs) are part of the NOVA format definition and are
+licensed under the Apache License, Version 2.0 (LICENSE-APACHE).
+
+SPDX-License-Identifier: (EUPL-1.2 OR MPL-2.0) AND Apache-2.0

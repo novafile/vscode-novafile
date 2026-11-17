@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 // Generates the TextMate grammars in ../syntaxes from the definitions below.
 //
 // The grammars are written as JavaScript so that regular expressions can use

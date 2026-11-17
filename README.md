@@ -100,4 +100,4 @@ The TextMate grammars in `syntaxes/` are generated from `scripts/build-grammars.
 
 ## License
 
-Licensed under either the [EUPL-1.2](LICENSE-EUPL) or the [MPL-2.0](LICENSE-MPL), at your option (SPDX-License-Identifier: `EUPL-1.2 OR MPL-2.0`).
+The extension code is licensed under either the [EUPL-1.2](LICENSE-EUPL) or the [MPL-2.0](LICENSE-MPL), at your option. The grammar definitions (`syntaxes/` and `scripts/build-grammars.mjs`) are part of the format definition and licensed under [Apache-2.0](LICENSE-APACHE), like the [specification](https://github.com/novafile/spec); the grammar test files are CC0-1.0. See [REUSE.toml](REUSE.toml).

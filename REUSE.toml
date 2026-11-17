@@ -1,0 +1,9 @@
+version = 1
+
+[[annotations]]
+path = ["syntaxes/**", "scripts/build-grammars.mjs"]
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = ["test/**/*.test.*"]
+SPDX-License-Identifier = "CC0-1.0"
