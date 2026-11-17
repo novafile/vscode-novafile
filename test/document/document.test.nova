@@ -1,0 +1,112 @@
+# SYNTAX TEST "source.nova" "data documents: directives, block structure, scalars"
+# A comment line
+# <- comment.line.number-sign.nova punctuation.definition.comment.nova
+# ^^^^^^^^^^^^^^ comment.line.number-sign.nova
+@nova 1.0
+# <- punctuation.definition.directive.nova
+#^^^^ keyword.control.directive.nova
+#     ^^^ constant.numeric.version.nova
+@schema infrastructure@1.2.0#8c21a0f3d5e6b7c8
+#^^^^^^ keyword.control.directive.schema.nova
+#       ^^^^^^^^^^^^^^ entity.name.type.schema.nova
+#                     ^ punctuation.separator.version.nova
+#                      ^^^^^ constant.numeric.version.nova
+#                           ^ punctuation.separator.fingerprint.nova
+#                            ^^^^^^^^^^^^^^^^ constant.other.fingerprint.nova
+@revision sha256:91cf16db2f4a
+#^^^^^^^^ keyword.control.directive.nova
+#         ^^^^^^^^^^^^^^^^^^^ constant.other.revision.nova
+@scope services[id=api]
+#^^^^^ keyword.control.directive.nova
+#      ^^^^^^^^ variable.other.member.nova
+#              ^ meta.selector.nova punctuation.definition.selector.begin.nova
+#               ^^ meta.selector.nova variable.other.member.nova
+#                 ^ meta.selector.nova keyword.operator.comparison.nova
+#                  ^^^ meta.selector.nova string.unquoted.flow.nova
+@compat json
+#^^^^^^ keyword.control.directive.nova
+#       ^^^^ support.constant.directive-argument.nova
+@x-generator nvf 0.4   # extension directive
+#^^^^^^^^^^^ keyword.control.directive.nova
+#                      ^ comment.line.number-sign.nova
+environment: production
+# <----------- meta.mapping.entry.nova entity.name.tag.nova
+#          ^ punctuation.separator.key-value.nova
+#            ^^^^^^^^^^ string.unquoted.plain.nova
+deployed_at: 2026-11-17T16:00:00Z   # a string until a schema resolves it
+#            ^^^^^^^^^^^^^^^^^^^^ string.unquoted.plain.nova
+#                                   ^ comment.line.number-sign.nova punctuation.definition.comment.nova
+title: a plain scalar with spaces and a#hash
+#      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ string.unquoted.plain.nova
+url: http://example.com/path:8080
+#    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ string.unquoted.plain.nova
+"odd key": 1
+# <--------- entity.name.tag.nova string.quoted.double.nova
+#          ^ constant.numeric.integer.nova
+dashed-key_2: x
+# <------------ entity.name.tag.nova
+port: 8080
+#     ^^^^ constant.numeric.integer.nova
+negative: -42
+#         ^^^ constant.numeric.integer.nova
+ratio: 22/7
+#      ^^^^ constant.numeric.rational.nova
+pi: 3.14159
+#   ^^^^^^^ constant.numeric.float.nova
+big: -1.5e300
+#    ^^^^^^^^ constant.numeric.float.nova
+small: 1E-7
+#      ^^^^ constant.numeric.float.nova
+version: 1.2.3
+#        ^^^^^ string.unquoted.plain.nova
+zip: 08080
+#    ^^^^^ string.unquoted.plain.nova
+yes_is_string: yes
+#              ^^^ string.unquoted.plain.nova
+enabled: true
+#        ^^^^ constant.language.boolean.nova
+disabled: false   # trailing comment
+#         ^^^^^ constant.language.boolean.nova
+#                 ^ comment.line.number-sign.nova
+nothing: null
+#        ^^^^ constant.language.null.nova
+not_bool: true story
+#         ^^^^^^^^^^ string.unquoted.plain.nova
+greeting: "h\u00e9llo \u{1F600} \"quoted\" \n \$HOME ${not_interpolated}"
+#         ^ string.quoted.double.nova punctuation.definition.string.begin.nova
+#           ^^^^^^ string.quoted.double.nova constant.character.escape.nova
+#                     ^^^^^^^^^ string.quoted.double.nova constant.character.escape.nova
+#                               ^^ constant.character.escape.nova
+#                                          ^^ constant.character.escape.nova
+#                                             ^^ constant.character.escape.nova
+#                                                    ^^^^^^^^^^^^^^^^^^^ string.quoted.double.nova - meta.embedded.interpolation.nova
+bad: "\q"
+#     ^^ string.quoted.double.nova invalid.illegal.escape.nova
+nested:
+# <------ entity.name.tag.nova
+  child: 1
+# ^^^^^ entity.name.tag.nova
+  deeper:
+    leaf: value
+#   ^^^^ entity.name.tag.nova
+#         ^^^^^ string.unquoted.plain.nova
+services:
+  - id: auth
+# ^ punctuation.definition.list.item.nova
+#   ^^ entity.name.tag.nova
+#       ^^^^ string.unquoted.plain.nova
+    port: 8080
+#   ^^^^ entity.name.tag.nova
+  - plain string item
+# ^ meta.list.item.nova punctuation.definition.list.item.nova
+#   ^^^^^^^^^^^^^^^^^ string.unquoted.plain.nova
+  - 42
+#   ^^ constant.numeric.integer.nova
+  - [1, 2]
+#   ^ meta.flow.list.nova punctuation.definition.list.begin.nova
+  -
+# ^ punctuation.definition.list.item.nova
+    - nested list item
+#     ^^^^^^^^^^^^^^^^ string.unquoted.plain.nova
+---
+# <--- meta.separator.document.nova

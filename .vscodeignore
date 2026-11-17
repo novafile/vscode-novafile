@@ -1,0 +1,16 @@
+# Only dist/, syntaxes/, language-configuration.json, images/ and the
+# metadata files end up in the .vsix.
+.github/**
+.vscode/**
+.vscode-test/**
+node_modules/**
+scripts/**
+src/**
+test/**
+**/*.map
+**/*.ts
+esbuild.mjs
+tsconfig.json
+package-lock.json
+.gitignore
+*.vsix

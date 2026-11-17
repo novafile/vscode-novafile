@@ -1,0 +1,66 @@
+{
+  "comments": {
+    "lineComment": "#"
+  },
+  "brackets": [
+    ["[", "]"],
+    ["{", "}"],
+    ["(", ")"]
+  ],
+  "autoClosingPairs": [
+    { "open": "[", "close": "]" },
+    { "open": "{", "close": "}" },
+    { "open": "(", "close": ")" },
+    { "open": "\"", "close": "\"", "notIn": ["string", "comment"] }
+  ],
+  "autoCloseBefore": ";:.,=}])> \n\t#",
+  "surroundingPairs": [
+    ["[", "]"],
+    ["{", "}"],
+    ["(", ")"],
+    ["\"", "\""]
+  ],
+  "colorizedBracketPairs": [
+    ["[", "]"],
+    ["{", "}"],
+    ["(", ")"]
+  ],
+  "wordPattern": "(-?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?(?:/\\d+)?)|([$@!]?[A-Za-z_][A-Za-z0-9_-]*)",
+  "indentationRules": {
+    "increaseIndentPattern": "^\\s*(?:(?:-\\s+)?(?:[A-Za-z_][A-Za-z0-9_-]*|\"(?:[^\"\\\\]|\\\\.)*\")?(?:\\[\\d+\\]\\{[^}]*\\})?:|-|.*:\\s*\\|-?|@(?:if|else|for)\\b.*:|(?:record|enum)\\s+.*:|@let\\s+[A-Za-z_][A-Za-z0-9_-]*\\s*:)\\s*(?:#.*)?$",
+    "decreaseIndentPattern": "^\\s*[\\]\\}\\)]"
+  },
+  "onEnterRules": [
+    {
+      "beforeText": "^\\s*#",
+      "action": { "indent": "none" }
+    },
+    {
+      "beforeText": "^\\s*-\\s+(?:[A-Za-z_][A-Za-z0-9_-]*|\"(?:[^\"\\\\]|\\\\.)*\")(?:\\[\\d+\\]\\{[^}]*\\})?:\\s*(?:#.*)?$",
+      "action": { "indent": "indent", "appendText": "  " }
+    },
+    {
+      "beforeText": "^\\s*-\\s+(?:[A-Za-z_][A-Za-z0-9_-]*|\"(?:[^\"\\\\]|\\\\.)*\"):\\s+\\S.*$",
+      "action": { "indent": "indent" }
+    },
+    {
+      "beforeText": "^\\s*-\\s+\\.\\.\\.\\S.*$",
+      "action": { "indent": "indent" }
+    },
+    {
+      "beforeText": "^\\s*(?:[A-Za-z_][A-Za-z0-9_-]*|\"(?:[^\"\\\\]|\\\\.)*\")?(?:\\[\\d+\\]\\{[^}]*\\})?:\\s*(?:\\|-?)?\\s*(?:#.*)?$",
+      "action": { "indent": "indent" }
+    },
+    {
+      "beforeText": "^\\s*(?:@(?:if|else|for)\\b.*|(?:record|enum)\\s+.*|@let\\s+[A-Za-z_][A-Za-z0-9_-]*\\s*):\\s*(?:#.*)?$",
+      "action": { "indent": "indent" }
+    }
+  ],
+  "folding": {
+    "offSide": true,
+    "markers": {
+      "start": "^\\s*#\\s*region\\b",
+      "end": "^\\s*#\\s*endregion\\b"
+    }
+  }
+}

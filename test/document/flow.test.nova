@@ -1,0 +1,72 @@
+# SYNTAX TEST "source.nova" "flow values and typed literals"
+list: [1, two, "three", 4.5, 1/3, true, null,]
+#     ^ meta.flow.list.nova punctuation.definition.list.begin.nova
+#      ^ meta.flow.list.nova constant.numeric.integer.nova
+#       ^ meta.flow.list.nova punctuation.separator.comma.nova
+#         ^^^ meta.flow.list.nova string.unquoted.flow.nova
+#              ^^^^^^^ meta.flow.list.nova string.quoted.double.nova
+#                       ^^^ constant.numeric.float.nova
+#                            ^^^ constant.numeric.rational.nova
+#                                 ^^^^ constant.language.boolean.nova
+#                                       ^^^^ constant.language.null.nova
+#                                            ^ punctuation.definition.list.end.nova
+record: {id: auth, "odd key": 1, image: ghcr.io/example/auth:v2}
+#       ^ meta.flow.record.nova punctuation.definition.record.begin.nova
+#        ^^ meta.flow.record.nova entity.name.tag.nova
+#            ^^^^ meta.flow.record.nova string.unquoted.flow.nova
+#                  ^^^^^^^^^ meta.flow.record.nova entity.name.tag.nova string.quoted.double.nova
+#                                       ^^^^^^^^^^^^^^^^^^^^^^^ meta.flow.record.nova string.unquoted.flow.nova
+#                                                              ^ punctuation.definition.record.end.nova
+tuples: [(1, 2), (1,), ()]
+#        ^ meta.flow.tuple.nova punctuation.definition.tuple.begin.nova
+#             ^ meta.flow.tuple.nova punctuation.definition.tuple.end.nova
+set: @set[a, b]
+#    ^ punctuation.definition.typed-literal.nova
+#     ^^^ meta.flow.set.nova support.type.set.nova
+#         ^ meta.flow.set.nova string.unquoted.flow.nova
+#             ^ punctuation.definition.set.end.nova
+map: @map{1 => one, (1, 2) => pair}
+#     ^^^ meta.flow.map.nova support.type.map.nova
+#        ^ punctuation.definition.map.begin.nova
+#           ^^ meta.flow.map.nova keyword.operator.map-arrow.nova
+#              ^^^ meta.flow.map.nova string.unquoted.flow.nova
+#                   ^ meta.flow.map.nova meta.flow.tuple.nova
+status: !active
+#       ^ constant.other.enum.variant.nova punctuation.definition.variant.nova
+#        ^^^^^^ constant.other.enum.variant.nova
+failure: !failed("disk full")
+#         ^^^^^^ constant.other.enum.variant.nova
+#               ^ meta.flow.tuple.nova punctuation.definition.tuple.begin.nova
+#                ^^^^^^^^^^^ string.quoted.double.nova
+absent: !_
+#       ^^ constant.other.enum.variant.nova
+at: @timestamp("2026-11-17T16:00:00Z")
+#   ^ meta.typed-literal.nova punctuation.definition.typed-literal.nova
+#    ^^^^^^^^^ meta.typed-literal.nova support.function.typed-literal.nova
+#             ^ punctuation.section.arguments.begin.nova
+#              ^^^^^^^^^^^^^^^^^^^^^^ meta.typed-literal.arguments.nova string.quoted.double.nova
+#                                    ^ punctuation.section.arguments.end.nova
+timeout: @duration("1h30m")
+#         ^^^^^^^^ support.function.typed-literal.nova
+price: @decimal("12.50")
+#       ^^^^^^^ support.function.typed-literal.nova
+third: @rational("1/3")
+#       ^^^^^^^^ support.function.typed-literal.nova
+blob: @bytes("AP8H")
+#      ^^^^^ support.function.typed-literal.nova
+inf: @float("-inf")
+#     ^^^^^ support.function.typed-literal.nova
+values: [@timestamp("2026-01-01T00:00:00Z"), !ok, -0.0]
+#         ^^^^^^^^^ meta.flow.list.nova support.function.typed-literal.nova
+#                                            ^^^ meta.flow.list.nova constant.other.enum.variant.nova
+#                                                 ^^^^ meta.flow.list.nova constant.numeric.float.nova
+multi: [
+  1,   # comments are whitespace inside brackets
+# ^ meta.flow.list.nova constant.numeric.integer.nova
+#      ^ meta.flow.list.nova comment.line.number-sign.nova
+  {a: 2},
+#  ^ meta.flow.list.nova meta.flow.record.nova entity.name.tag.nova
+]
+# <- meta.flow.list.nova punctuation.definition.list.end.nova
+after_flow: [1]#comment right after a flow value
+#              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ comment.line.number-sign.nova

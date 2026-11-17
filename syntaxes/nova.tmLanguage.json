@@ -1,0 +1,1464 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "NOVA",
+  "scopeName": "source.nova",
+  "fileTypes": [
+    "nova"
+  ],
+  "patterns": [
+    {
+      "begin": "^(?=@template(?:\\s|$))",
+      "end": "(?!)",
+      "name": "meta.template.nova",
+      "patterns": [
+        {
+          "include": "#body-tpl"
+        }
+      ]
+    },
+    {
+      "begin": "^(?=@patch(?:\\s|$))",
+      "end": "(?!)",
+      "patterns": [
+        {
+          "include": "source.nova.patch"
+        }
+      ]
+    },
+    {
+      "include": "#body"
+    }
+  ],
+  "repository": {
+    "comment": {
+      "match": "(?:(?<!\\S)|(?<=[\\]})\"]))(#).*$",
+      "name": "comment.line.number-sign.nova",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.comment.nova"
+        }
+      }
+    },
+    "comma": {
+      "match": ",",
+      "name": "punctuation.separator.comma.nova"
+    },
+    "variant": {
+      "match": "(!)([A-Za-z_][A-Za-z0-9_-]*)",
+      "captures": {
+        "0": {
+          "name": "constant.other.enum.variant.nova"
+        },
+        "1": {
+          "name": "punctuation.definition.variant.nova"
+        }
+      }
+    },
+    "reference": {
+      "match": "(\\$)([A-Za-z_][A-Za-z0-9_-]*)((?:\\.(?:[A-Za-z_][A-Za-z0-9_-]*|\"(?:[^\"\\\\]|\\\\.)*\")|\\[[^\\]\\n]*\\])*)",
+      "name": "variable.other.reference.nova",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.variable.nova"
+        },
+        "3": {
+          "patterns": [
+            {
+              "include": "#path"
+            }
+          ]
+        }
+      }
+    },
+    "spread": {
+      "match": "\\.\\.\\.(?=\\$|[\\[({])",
+      "name": "keyword.operator.spread.nova"
+    },
+    "flow-scalar": {
+      "patterns": [
+        {
+          "match": "(?<![^\\s,\\[\\]{}()\":=<>?!])(?:true|false)(?=[\\s,\\[\\]{}()\"]|:(?:[\\s,\\[\\]{}()\"]|$)|$)",
+          "name": "constant.language.boolean.nova"
+        },
+        {
+          "match": "(?<![^\\s,\\[\\]{}()\":=<>?!])null(?=[\\s,\\[\\]{}()\"]|:(?:[\\s,\\[\\]{}()\"]|$)|$)",
+          "name": "constant.language.null.nova"
+        },
+        {
+          "match": "(?<![^\\s,\\[\\]{}()\":=<>?!])-?(?:0|[1-9][0-9]*)/[1-9][0-9]*(?=[\\s,\\[\\]{}()\"]|:(?:[\\s,\\[\\]{}()\"]|$)|$)",
+          "name": "constant.numeric.rational.nova"
+        },
+        {
+          "match": "(?<![^\\s,\\[\\]{}()\":=<>?!])-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+(?:[eE][+-]?[0-9]+)?|[eE][+-]?[0-9]+)(?=[\\s,\\[\\]{}()\"]|:(?:[\\s,\\[\\]{}()\"]|$)|$)",
+          "name": "constant.numeric.float.nova"
+        },
+        {
+          "match": "(?<![^\\s,\\[\\]{}()\":=<>?!])-?(?:0|[1-9][0-9]*)(?=[\\s,\\[\\]{}()\"]|:(?:[\\s,\\[\\]{}()\"]|$)|$)",
+          "name": "constant.numeric.integer.nova"
+        },
+        {
+          "match": "(?<![^\\s,\\[\\]{}()\":=<>?!])(?![!\"#$%&'*,:<=>?@\\[\\\\\\]^\\x60{|}~()]|\\.\\.\\.)(?:[^\\s,\\[\\]{}()\":]|:(?![\\s,\\[\\]{}()\"]|$))+",
+          "name": "string.unquoted.flow.nova"
+        }
+      ]
+    },
+    "inline-scalar": {
+      "patterns": [
+        {
+          "match": "(?<=\\s)(?:true|false)(?=\\s*(?:\\s#.*)?$)",
+          "name": "constant.language.boolean.nova"
+        },
+        {
+          "match": "(?<=\\s)null(?=\\s*(?:\\s#.*)?$)",
+          "name": "constant.language.null.nova"
+        },
+        {
+          "match": "(?<=\\s)-?(?:0|[1-9][0-9]*)/[1-9][0-9]*(?=\\s*(?:\\s#.*)?$)",
+          "name": "constant.numeric.rational.nova"
+        },
+        {
+          "match": "(?<=\\s)-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+(?:[eE][+-]?[0-9]+)?|[eE][+-]?[0-9]+)(?=\\s*(?:\\s#.*)?$)",
+          "name": "constant.numeric.float.nova"
+        },
+        {
+          "match": "(?<=\\s)-?(?:0|[1-9][0-9]*)(?=\\s*(?:\\s#.*)?$)",
+          "name": "constant.numeric.integer.nova"
+        },
+        {
+          "match": "(?<=\\s)(?![!\"#$%&'*,:<=>?@\\[\\\\\\]^\\x60{|}~()]|\\.\\.\\.|-(?:\\s|$))(?:[^\\s#]|(?<=\\S)#|[ \\t]+(?=[^\\s#]))+",
+          "name": "string.unquoted.plain.nova"
+        }
+      ]
+    },
+    "path": {
+      "patterns": [
+        {
+          "match": "\\.(?=\\{)",
+          "name": "punctuation.accessor.nova"
+        },
+        {
+          "begin": "\\{",
+          "end": "\\}",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.projection.begin.nova"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.projection.end.nova"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#comma"
+            },
+            {
+              "match": "[A-Za-z_][A-Za-z0-9_-]*",
+              "name": "variable.other.member.nova"
+            }
+          ]
+        },
+        {
+          "begin": "\\[",
+          "end": "\\]",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.selector.begin.nova"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.selector.end.nova"
+            }
+          },
+          "name": "meta.selector.nova",
+          "patterns": [
+            {
+              "match": "\\*",
+              "name": "keyword.operator.wildcard.nova"
+            },
+            {
+              "match": "\\?!?",
+              "name": "keyword.operator.filter.nova"
+            },
+            {
+              "match": "\\G([A-Za-z_][A-Za-z0-9_-]*)(?=\\s*(?:=|!=|<=?|>=?))",
+              "name": "variable.other.member.nova"
+            },
+            {
+              "match": "(?<=\\?|\\?!)([A-Za-z_][A-Za-z0-9_-]*(?:\\.[A-Za-z_][A-Za-z0-9_-]*)*)",
+              "name": "variable.other.member.nova"
+            },
+            {
+              "match": "!=|<=|>=|=|<|>",
+              "name": "keyword.operator.comparison.nova"
+            },
+            {
+              "match": "(?<=\\s)in(?=\\s)",
+              "name": "keyword.operator.in.nova"
+            },
+            {
+              "include": "#flow-value"
+            }
+          ]
+        },
+        {
+          "match": "\\.",
+          "name": "punctuation.accessor.nova"
+        },
+        {
+          "match": "[A-Za-z_][A-Za-z0-9_-]*",
+          "name": "variable.other.member.nova"
+        },
+        {
+          "include": "#string"
+        }
+      ]
+    },
+    "data-directives": {
+      "patterns": [
+        {
+          "match": "^(@)(schema)(?=\\s|$)(?:\\s+([A-Za-z_][A-Za-z0-9_-]*)(@)([0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][0-9A-Za-z.+-]*)?)?(?:(#)([0-9A-Fa-f]+))?)?",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.directive.nova"
+            },
+            "2": {
+              "name": "keyword.control.directive.schema.nova"
+            },
+            "3": {
+              "name": "entity.name.type.schema.nova"
+            },
+            "4": {
+              "name": "punctuation.separator.version.nova"
+            },
+            "5": {
+              "name": "constant.numeric.version.nova"
+            },
+            "6": {
+              "name": "punctuation.separator.fingerprint.nova"
+            },
+            "7": {
+              "name": "constant.other.fingerprint.nova"
+            }
+          }
+        },
+        {
+          "match": "^(@)(nova|template)(?=\\s|$)(?:\\s+([0-9]+\\.[0-9]+))?",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.directive.nova"
+            },
+            "2": {
+              "name": "keyword.control.directive.nova"
+            },
+            "3": {
+              "name": "constant.numeric.version.nova"
+            }
+          }
+        },
+        {
+          "match": "^(@)(mode|compat|envelope)(?=\\s|$)(?:\\s+([A-Za-z_][A-Za-z0-9_-]*))?",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.directive.nova"
+            },
+            "2": {
+              "name": "keyword.control.directive.nova"
+            },
+            "3": {
+              "name": "support.constant.directive-argument.nova"
+            }
+          }
+        },
+        {
+          "match": "^(@)(revision|base)(?=\\s|$)(?:\\s+(\\S+))?",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.directive.nova"
+            },
+            "2": {
+              "name": "keyword.control.directive.nova"
+            },
+            "3": {
+              "name": "constant.other.revision.nova"
+            }
+          }
+        },
+        {
+          "begin": "^(@)(scope|get|select)(?=\\s|$)",
+          "end": "$",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.directive.nova"
+            },
+            "2": {
+              "name": "keyword.control.directive.nova"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#comment"
+            },
+            {
+              "include": "#path"
+            }
+          ]
+        },
+        {
+          "match": "^(@)([A-Za-z_][A-Za-z0-9_-]*)(?=\\s|$)(.*)$",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.directive.nova"
+            },
+            "2": {
+              "name": "keyword.control.directive.nova"
+            },
+            "3": {
+              "patterns": [
+                {
+                  "include": "#comment"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "template-directives": {
+      "patterns": [
+        {
+          "begin": "^(@)(param)\\s+([A-Za-z_][A-Za-z0-9_-]*)(\\?)?\\s*(:)",
+          "end": "$",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.directive.nova"
+            },
+            "2": {
+              "name": "keyword.control.directive.nova"
+            },
+            "3": {
+              "name": "variable.parameter.nova"
+            },
+            "4": {
+              "name": "keyword.operator.optional.nova"
+            },
+            "5": {
+              "name": "punctuation.separator.key-value.nova"
+            }
+          },
+          "name": "meta.directive.param.nova",
+          "patterns": [
+            {
+              "include": "source.nova.schema#field-tail"
+            }
+          ]
+        },
+        {
+          "begin": "^(@)(import)(?=\\s)",
+          "end": "$",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.directive.nova"
+            },
+            "2": {
+              "name": "keyword.control.directive.nova"
+            }
+          },
+          "name": "meta.directive.import.nova",
+          "patterns": [
+            {
+              "include": "#comment"
+            },
+            {
+              "include": "#string"
+            },
+            {
+              "match": "(?<=\\s)(as)\\s+([A-Za-z_][A-Za-z0-9_-]*)",
+              "captures": {
+                "1": {
+                  "name": "keyword.control.as.nova"
+                },
+                "2": {
+                  "name": "variable.other.constant.nova"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "begin": "^(@)(let)\\s+([A-Za-z_][A-Za-z0-9_-]*)\\s*(?:(=)|(:)(?=\\s|$))",
+          "end": "$",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.directive.nova"
+            },
+            "2": {
+              "name": "keyword.control.directive.nova"
+            },
+            "3": {
+              "name": "variable.other.constant.nova"
+            },
+            "4": {
+              "name": "keyword.operator.assignment.nova"
+            },
+            "5": {
+              "name": "punctuation.separator.key-value.nova"
+            }
+          },
+          "name": "meta.directive.let.nova",
+          "patterns": [
+            {
+              "include": "#inline-value-tpl"
+            }
+          ]
+        }
+      ]
+    },
+    "string": {
+      "begin": "\"",
+      "end": "\"|(?=$)",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.nova"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.nova"
+        }
+      },
+      "name": "string.quoted.double.nova",
+      "patterns": [
+        {
+          "match": "\\\\(?:[\"\\\\/bfnrt$]|u[0-9A-Fa-f]{4}|u\\{[0-9A-Fa-f]{1,6}\\})",
+          "name": "constant.character.escape.nova"
+        },
+        {
+          "match": "\\\\.",
+          "name": "invalid.illegal.escape.nova"
+        }
+      ]
+    },
+    "flow-value": {
+      "patterns": [
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#string"
+        },
+        {
+          "include": "#typed-literal"
+        },
+        {
+          "include": "#set"
+        },
+        {
+          "include": "#map"
+        },
+        {
+          "include": "#list"
+        },
+        {
+          "include": "#record"
+        },
+        {
+          "include": "#tuple"
+        },
+        {
+          "include": "#variant"
+        },
+        {
+          "include": "#flow-scalar"
+        }
+      ]
+    },
+    "typed-literal": {
+      "begin": "(@)(timestamp|duration|decimal|rational|bytes|float|[A-Za-z_][A-Za-z0-9_-]*)(\\()",
+      "end": "\\)",
+      "beginCaptures": {
+        "0": {
+          "name": "meta.typed-literal.nova"
+        },
+        "1": {
+          "name": "punctuation.definition.typed-literal.nova"
+        },
+        "2": {
+          "name": "support.function.typed-literal.nova"
+        },
+        "3": {
+          "name": "punctuation.section.arguments.begin.nova"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.arguments.end.nova"
+        }
+      },
+      "contentName": "meta.typed-literal.arguments.nova",
+      "patterns": [
+        {
+          "include": "#flow-value"
+        }
+      ]
+    },
+    "set": {
+      "begin": "(@)(set)(\\[)",
+      "end": "\\]",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.typed-literal.nova"
+        },
+        "2": {
+          "name": "support.type.set.nova"
+        },
+        "3": {
+          "name": "punctuation.definition.set.begin.nova"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.set.end.nova"
+        }
+      },
+      "name": "meta.flow.set.nova",
+      "patterns": [
+        {
+          "include": "#comma"
+        },
+        {
+          "include": "#flow-value"
+        }
+      ]
+    },
+    "map": {
+      "begin": "(@)(map)(\\{)",
+      "end": "\\}",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.typed-literal.nova"
+        },
+        "2": {
+          "name": "support.type.map.nova"
+        },
+        "3": {
+          "name": "punctuation.definition.map.begin.nova"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.map.end.nova"
+        }
+      },
+      "name": "meta.flow.map.nova",
+      "patterns": [
+        {
+          "match": "=>",
+          "name": "keyword.operator.map-arrow.nova"
+        },
+        {
+          "include": "#comma"
+        },
+        {
+          "include": "#flow-value"
+        }
+      ]
+    },
+    "list": {
+      "begin": "\\[",
+      "end": "\\]",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.list.begin.nova"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.list.end.nova"
+        }
+      },
+      "name": "meta.flow.list.nova",
+      "patterns": [
+        {
+          "include": "#comma"
+        },
+        {
+          "include": "#flow-value"
+        }
+      ]
+    },
+    "record": {
+      "begin": "\\{",
+      "end": "\\}",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.record.begin.nova"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.record.end.nova"
+        }
+      },
+      "name": "meta.flow.record.nova",
+      "patterns": [
+        {
+          "include": "#comma"
+        },
+        {
+          "match": "(?<![^\\s,{])(?:([A-Za-z_][A-Za-z0-9_-]*)|(\"(?:[^\"\\\\]|\\\\.)*\"))\\s*(:)(?=[\\s,\\[\\]{}()\"]|$)",
+          "captures": {
+            "1": {
+              "name": "entity.name.tag.nova"
+            },
+            "2": {
+              "name": "entity.name.tag.nova string.quoted.double.nova"
+            },
+            "3": {
+              "name": "punctuation.separator.key-value.nova"
+            }
+          }
+        },
+        {
+          "include": "#flow-value"
+        }
+      ]
+    },
+    "tuple": {
+      "begin": "\\(",
+      "end": "\\)",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.tuple.begin.nova"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.tuple.end.nova"
+        }
+      },
+      "name": "meta.flow.tuple.nova",
+      "patterns": [
+        {
+          "include": "#comma"
+        },
+        {
+          "include": "#flow-value"
+        }
+      ]
+    },
+    "inline-value": {
+      "patterns": [
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#inline-scalar"
+        },
+        {
+          "include": "#flow-value"
+        }
+      ]
+    },
+    "block-string": {
+      "begin": "^( *)(?:(-)( +))?(?:(?:([A-Za-z_][A-Za-z0-9_-]*)|(\"(?:[^\"\\\\]|\\\\.)*\"))(:)( +))?(\\|-?)(?=\\s*(?:#|$))",
+      "end": "^(?!\\1 |\\s*$)",
+      "beginCaptures": {
+        "2": {
+          "name": "punctuation.definition.list.item.nova"
+        },
+        "4": {
+          "name": "entity.name.tag.nova"
+        },
+        "5": {
+          "name": "entity.name.tag.nova string.quoted.double.nova"
+        },
+        "6": {
+          "name": "punctuation.separator.key-value.nova"
+        },
+        "8": {
+          "name": "keyword.control.flow.block-scalar.nova"
+        }
+      },
+      "patterns": [
+        {
+          "begin": "^(?=.)",
+          "end": "$",
+          "contentName": "string.unquoted.block.nova",
+          "patterns": []
+        },
+        {
+          "include": "#comment"
+        }
+      ]
+    },
+    "table": {
+      "begin": "^( *)(?:(-)( +))?(?:([A-Za-z_][A-Za-z0-9_-]*)|(\"(?:[^\"\\\\]|\\\\.)*\"))?(\\[)([0-9]+)(\\])(\\{)([^}]*)(\\})(:)",
+      "end": "^(?!\\1 |\\s*$)",
+      "beginCaptures": {
+        "2": {
+          "name": "punctuation.definition.list.item.nova"
+        },
+        "4": {
+          "name": "entity.name.tag.nova"
+        },
+        "5": {
+          "name": "entity.name.tag.nova string.quoted.double.nova"
+        },
+        "6": {
+          "name": "punctuation.definition.table.count.begin.nova"
+        },
+        "7": {
+          "name": "constant.numeric.integer.table.count.nova"
+        },
+        "8": {
+          "name": "punctuation.definition.table.count.end.nova"
+        },
+        "9": {
+          "name": "punctuation.definition.table.columns.begin.nova"
+        },
+        "10": {
+          "patterns": [
+            {
+              "include": "#comma"
+            },
+            {
+              "match": "[A-Za-z_][A-Za-z0-9_-]*",
+              "name": "support.type.property-name.table.nova"
+            },
+            {
+              "match": "\"(?:[^\"\\\\]|\\\\.)*\"",
+              "name": "support.type.property-name.table.nova string.quoted.double.nova"
+            }
+          ]
+        },
+        "11": {
+          "name": "punctuation.definition.table.columns.end.nova"
+        },
+        "12": {
+          "name": "punctuation.separator.key-value.nova"
+        }
+      },
+      "name": "meta.table.nova",
+      "patterns": [
+        {
+          "include": "#comment"
+        },
+        {
+          "begin": "^\\s+(?=\\S)",
+          "end": "$",
+          "name": "meta.table.row.nova",
+          "patterns": [
+            {
+              "include": "#comma"
+            },
+            {
+              "include": "#flow-value"
+            }
+          ]
+        }
+      ]
+    },
+    "entry": {
+      "begin": "^\\s*(?:(-)\\s+)?(?:([A-Za-z_][A-Za-z0-9_-]*)|(\"(?:[^\"\\\\]|\\\\.)*\"))(:)(?=\\s|$)",
+      "end": "$",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.list.item.nova"
+        },
+        "2": {
+          "name": "entity.name.tag.nova"
+        },
+        "3": {
+          "name": "entity.name.tag.nova string.quoted.double.nova"
+        },
+        "4": {
+          "name": "punctuation.separator.key-value.nova"
+        }
+      },
+      "name": "meta.mapping.entry.nova",
+      "patterns": [
+        {
+          "include": "#inline-value"
+        }
+      ]
+    },
+    "list-item": {
+      "begin": "^\\s*(-)(?=\\s|$)",
+      "end": "$",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.list.item.nova"
+        }
+      },
+      "name": "meta.list.item.nova",
+      "patterns": [
+        {
+          "include": "#inline-value"
+        }
+      ]
+    },
+    "directives": {
+      "patterns": [
+        {
+          "include": "#data-directives"
+        }
+      ]
+    },
+    "body": {
+      "patterns": [
+        {
+          "match": "^---\\s*$",
+          "name": "meta.separator.document.nova punctuation.separator.document.nova"
+        },
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#directives"
+        },
+        {
+          "include": "#block-string"
+        },
+        {
+          "include": "#table"
+        },
+        {
+          "include": "#entry"
+        },
+        {
+          "include": "#list-item"
+        },
+        {
+          "include": "#flow-value"
+        }
+      ]
+    },
+    "string-tpl": {
+      "begin": "\"",
+      "end": "\"|(?=$)",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.nova"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.nova"
+        }
+      },
+      "name": "string.quoted.double.nova",
+      "patterns": [
+        {
+          "match": "\\\\(?:[\"\\\\/bfnrt$]|u[0-9A-Fa-f]{4}|u\\{[0-9A-Fa-f]{1,6}\\})",
+          "name": "constant.character.escape.nova"
+        },
+        {
+          "match": "\\\\.",
+          "name": "invalid.illegal.escape.nova"
+        },
+        {
+          "match": "\\$\\$\\{",
+          "name": "constant.character.escape.dollar.nova"
+        },
+        {
+          "begin": "\\$\\{",
+          "end": "\\}",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.section.interpolation.begin.nova"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.section.interpolation.end.nova"
+            }
+          },
+          "name": "meta.embedded.interpolation.nova",
+          "contentName": "variable.other.interpolation.nova",
+          "patterns": [
+            {
+              "include": "#path"
+            }
+          ]
+        }
+      ]
+    },
+    "interpolation": {
+      "patterns": [
+        {
+          "match": "\\$\\$\\{",
+          "name": "constant.character.escape.dollar.nova"
+        },
+        {
+          "begin": "\\$\\{",
+          "end": "\\}",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.section.interpolation.begin.nova"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.section.interpolation.end.nova"
+            }
+          },
+          "name": "meta.embedded.interpolation.nova",
+          "contentName": "variable.other.interpolation.nova",
+          "patterns": [
+            {
+              "include": "#path"
+            }
+          ]
+        }
+      ]
+    },
+    "flow-value-tpl": {
+      "patterns": [
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#string-tpl"
+        },
+        {
+          "include": "#typed-literal-tpl"
+        },
+        {
+          "include": "#set-tpl"
+        },
+        {
+          "include": "#map-tpl"
+        },
+        {
+          "include": "#list-tpl"
+        },
+        {
+          "include": "#record-tpl"
+        },
+        {
+          "include": "#tuple-tpl"
+        },
+        {
+          "include": "#variant"
+        },
+        {
+          "include": "#spread"
+        },
+        {
+          "include": "#reference"
+        },
+        {
+          "include": "#flow-scalar"
+        }
+      ]
+    },
+    "typed-literal-tpl": {
+      "begin": "(@)(timestamp|duration|decimal|rational|bytes|float|[A-Za-z_][A-Za-z0-9_-]*)(\\()",
+      "end": "\\)",
+      "beginCaptures": {
+        "0": {
+          "name": "meta.typed-literal.nova"
+        },
+        "1": {
+          "name": "punctuation.definition.typed-literal.nova"
+        },
+        "2": {
+          "name": "support.function.typed-literal.nova"
+        },
+        "3": {
+          "name": "punctuation.section.arguments.begin.nova"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.arguments.end.nova"
+        }
+      },
+      "contentName": "meta.typed-literal.arguments.nova",
+      "patterns": [
+        {
+          "include": "#flow-value-tpl"
+        }
+      ]
+    },
+    "set-tpl": {
+      "begin": "(@)(set)(\\[)",
+      "end": "\\]",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.typed-literal.nova"
+        },
+        "2": {
+          "name": "support.type.set.nova"
+        },
+        "3": {
+          "name": "punctuation.definition.set.begin.nova"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.set.end.nova"
+        }
+      },
+      "name": "meta.flow.set.nova",
+      "patterns": [
+        {
+          "include": "#comma"
+        },
+        {
+          "include": "#flow-value-tpl"
+        }
+      ]
+    },
+    "map-tpl": {
+      "begin": "(@)(map)(\\{)",
+      "end": "\\}",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.typed-literal.nova"
+        },
+        "2": {
+          "name": "support.type.map.nova"
+        },
+        "3": {
+          "name": "punctuation.definition.map.begin.nova"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.map.end.nova"
+        }
+      },
+      "name": "meta.flow.map.nova",
+      "patterns": [
+        {
+          "match": "=>",
+          "name": "keyword.operator.map-arrow.nova"
+        },
+        {
+          "include": "#comma"
+        },
+        {
+          "include": "#flow-value-tpl"
+        }
+      ]
+    },
+    "list-tpl": {
+      "begin": "\\[",
+      "end": "\\]",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.list.begin.nova"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.list.end.nova"
+        }
+      },
+      "name": "meta.flow.list.nova",
+      "patterns": [
+        {
+          "include": "#comma"
+        },
+        {
+          "include": "#flow-value-tpl"
+        }
+      ]
+    },
+    "record-tpl": {
+      "begin": "\\{",
+      "end": "\\}",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.record.begin.nova"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.record.end.nova"
+        }
+      },
+      "name": "meta.flow.record.nova",
+      "patterns": [
+        {
+          "include": "#comma"
+        },
+        {
+          "match": "(?<![^\\s,{])(?:([A-Za-z_][A-Za-z0-9_-]*)|(\"(?:[^\"\\\\]|\\\\.)*\"))\\s*(:)(?=[\\s,\\[\\]{}()\"]|$)",
+          "captures": {
+            "1": {
+              "name": "entity.name.tag.nova"
+            },
+            "2": {
+              "name": "entity.name.tag.nova string.quoted.double.nova"
+            },
+            "3": {
+              "name": "punctuation.separator.key-value.nova"
+            }
+          }
+        },
+        {
+          "include": "#flow-value-tpl"
+        }
+      ]
+    },
+    "tuple-tpl": {
+      "begin": "\\(",
+      "end": "\\)",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.tuple.begin.nova"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.tuple.end.nova"
+        }
+      },
+      "name": "meta.flow.tuple.nova",
+      "patterns": [
+        {
+          "include": "#comma"
+        },
+        {
+          "include": "#flow-value-tpl"
+        }
+      ]
+    },
+    "inline-value-tpl": {
+      "patterns": [
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#inline-scalar"
+        },
+        {
+          "include": "#flow-value-tpl"
+        }
+      ]
+    },
+    "block-string-tpl": {
+      "begin": "^( *)(?:(-)( +))?(?:(?:([A-Za-z_][A-Za-z0-9_-]*)|(\"(?:[^\"\\\\]|\\\\.)*\"))(:)( +))?(\\|-?)(?=\\s*(?:#|$))",
+      "end": "^(?!\\1 |\\s*$)",
+      "beginCaptures": {
+        "2": {
+          "name": "punctuation.definition.list.item.nova"
+        },
+        "4": {
+          "name": "entity.name.tag.nova"
+        },
+        "5": {
+          "name": "entity.name.tag.nova string.quoted.double.nova"
+        },
+        "6": {
+          "name": "punctuation.separator.key-value.nova"
+        },
+        "8": {
+          "name": "keyword.control.flow.block-scalar.nova"
+        }
+      },
+      "patterns": [
+        {
+          "begin": "^(?=.)",
+          "end": "$",
+          "contentName": "string.unquoted.block.nova",
+          "patterns": [
+            {
+              "include": "#interpolation"
+            }
+          ]
+        },
+        {
+          "include": "#comment"
+        }
+      ]
+    },
+    "table-tpl": {
+      "begin": "^( *)(?:(-)( +))?(?:([A-Za-z_][A-Za-z0-9_-]*)|(\"(?:[^\"\\\\]|\\\\.)*\"))?(\\[)([0-9]+)(\\])(\\{)([^}]*)(\\})(:)",
+      "end": "^(?!\\1 |\\s*$)",
+      "beginCaptures": {
+        "2": {
+          "name": "punctuation.definition.list.item.nova"
+        },
+        "4": {
+          "name": "entity.name.tag.nova"
+        },
+        "5": {
+          "name": "entity.name.tag.nova string.quoted.double.nova"
+        },
+        "6": {
+          "name": "punctuation.definition.table.count.begin.nova"
+        },
+        "7": {
+          "name": "constant.numeric.integer.table.count.nova"
+        },
+        "8": {
+          "name": "punctuation.definition.table.count.end.nova"
+        },
+        "9": {
+          "name": "punctuation.definition.table.columns.begin.nova"
+        },
+        "10": {
+          "patterns": [
+            {
+              "include": "#comma"
+            },
+            {
+              "match": "[A-Za-z_][A-Za-z0-9_-]*",
+              "name": "support.type.property-name.table.nova"
+            },
+            {
+              "match": "\"(?:[^\"\\\\]|\\\\.)*\"",
+              "name": "support.type.property-name.table.nova string.quoted.double.nova"
+            }
+          ]
+        },
+        "11": {
+          "name": "punctuation.definition.table.columns.end.nova"
+        },
+        "12": {
+          "name": "punctuation.separator.key-value.nova"
+        }
+      },
+      "name": "meta.table.nova",
+      "patterns": [
+        {
+          "include": "#comment"
+        },
+        {
+          "begin": "^\\s+(?=\\S)",
+          "end": "$",
+          "name": "meta.table.row.nova",
+          "patterns": [
+            {
+              "include": "#comma"
+            },
+            {
+              "include": "#flow-value-tpl"
+            }
+          ]
+        }
+      ]
+    },
+    "entry-tpl": {
+      "begin": "^\\s*(?:(-)\\s+)?(?:([A-Za-z_][A-Za-z0-9_-]*)|(\"(?:[^\"\\\\]|\\\\.)*\"))(:)(?=\\s|$)",
+      "end": "$",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.list.item.nova"
+        },
+        "2": {
+          "name": "entity.name.tag.nova"
+        },
+        "3": {
+          "name": "entity.name.tag.nova string.quoted.double.nova",
+          "patterns": [
+            {
+              "include": "#interpolation"
+            }
+          ]
+        },
+        "4": {
+          "name": "punctuation.separator.key-value.nova"
+        }
+      },
+      "name": "meta.mapping.entry.nova",
+      "patterns": [
+        {
+          "include": "#inline-value-tpl"
+        }
+      ]
+    },
+    "list-item-tpl": {
+      "begin": "^\\s*(-)(?=\\s|$)",
+      "end": "$",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.list.item.nova"
+        }
+      },
+      "name": "meta.list.item.nova",
+      "patterns": [
+        {
+          "include": "#inline-value-tpl"
+        }
+      ]
+    },
+    "template-control": {
+      "patterns": [
+        {
+          "begin": "^\\s*(@)(for)(?=\\s)",
+          "end": "(:)?\\s*(?:(?<!\\S)((#).*))?$",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.keyword.nova"
+            },
+            "2": {
+              "name": "keyword.control.loop.for.nova"
+            }
+          },
+          "endCaptures": {
+            "1": {
+              "name": "punctuation.separator.key-value.nova"
+            },
+            "2": {
+              "name": "comment.line.number-sign.nova"
+            },
+            "3": {
+              "name": "punctuation.definition.comment.nova"
+            }
+          },
+          "name": "meta.control.for.nova",
+          "patterns": [
+            {
+              "match": "\\G\\s+([A-Za-z_][A-Za-z0-9_-]*)(?:\\s*(,)\\s*([A-Za-z_][A-Za-z0-9_-]*))?\\s+(in)(?=\\s)",
+              "captures": {
+                "1": {
+                  "name": "variable.other.loop.nova"
+                },
+                "2": {
+                  "name": "punctuation.separator.comma.nova"
+                },
+                "3": {
+                  "name": "variable.other.loop.nova"
+                },
+                "4": {
+                  "name": "keyword.control.in.nova"
+                }
+              }
+            },
+            {
+              "include": "#flow-value-tpl"
+            }
+          ]
+        },
+        {
+          "begin": "^\\s*(@)(if|else)(?=[\\s:])(?:\\s+(if)(?=\\s))?",
+          "end": "(:)?\\s*(?:(?<!\\S)((#).*))?$",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.keyword.nova"
+            },
+            "2": {
+              "name": "keyword.control.conditional.nova"
+            },
+            "3": {
+              "name": "keyword.control.conditional.nova"
+            }
+          },
+          "endCaptures": {
+            "1": {
+              "name": "punctuation.separator.key-value.nova"
+            },
+            "2": {
+              "name": "comment.line.number-sign.nova"
+            },
+            "3": {
+              "name": "punctuation.definition.comment.nova"
+            }
+          },
+          "name": "meta.control.conditional.nova",
+          "patterns": [
+            {
+              "include": "#condition"
+            }
+          ]
+        }
+      ]
+    },
+    "condition": {
+      "patterns": [
+        {
+          "match": "==|!=",
+          "name": "keyword.operator.comparison.nova"
+        },
+        {
+          "match": "(?<![\\w-])(?:and|or|not)(?![\\w-])",
+          "name": "keyword.operator.logical.nova"
+        },
+        {
+          "begin": "\\(",
+          "end": "\\)",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.section.group.begin.nova"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.section.group.end.nova"
+            }
+          },
+          "name": "meta.group.condition.nova",
+          "patterns": [
+            {
+              "include": "#condition"
+            }
+          ]
+        },
+        {
+          "include": "#flow-value-tpl"
+        }
+      ]
+    },
+    "spread-entry": {
+      "begin": "^\\s*(?=\\.\\.\\.)",
+      "end": "$",
+      "patterns": [
+        {
+          "include": "#inline-value-tpl"
+        }
+      ]
+    },
+    "directives-tpl": {
+      "patterns": [
+        {
+          "include": "#template-directives"
+        },
+        {
+          "include": "#data-directives"
+        }
+      ]
+    },
+    "body-tpl": {
+      "patterns": [
+        {
+          "match": "^---\\s*$",
+          "name": "meta.separator.document.nova punctuation.separator.document.nova"
+        },
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#template-control"
+        },
+        {
+          "include": "#spread-entry"
+        },
+        {
+          "include": "#directives-tpl"
+        },
+        {
+          "include": "#block-string-tpl"
+        },
+        {
+          "include": "#table-tpl"
+        },
+        {
+          "include": "#entry-tpl"
+        },
+        {
+          "include": "#list-item-tpl"
+        },
+        {
+          "include": "#flow-value-tpl"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,7 @@
+# SYNTAX TEST "source.nova" "a patch written in a .nova file uses the patch grammar"
+@patch infrastructure@1.0.0
+#^^^^^ keyword.control.directive.patch.nova
+replicas: 5 -> 8
+#           ^^ meta.patch.operation.replace.nova keyword.operator.arrow.nova
++ tags: canary
+# <- keyword.operator.patch.nova

@@ -1,0 +1,16 @@
+# SYNTAX TEST "source.nova" "top-level table and query responses"
+@revision sha256:91cf16db
+@scope services[*].{id,replicas}
+#               ^ keyword.operator.wildcard.nova
+#                 ^ punctuation.accessor.nova
+#                  ^ punctuation.definition.projection.begin.nova
+#                      ^^^^^^^^ variable.other.member.nova
+[2]{id,replicas}:
+# <- meta.table.nova punctuation.definition.table.count.begin.nova
+#^ constant.numeric.integer.table.count.nova
+#      ^^^^^^^^ support.type.property-name.table.nova
+  auth,3
+# ^^^^ meta.table.row.nova string.unquoted.flow.nova
+#      ^ meta.table.row.nova constant.numeric.integer.nova
+  api,5
+#     ^ meta.table.row.nova constant.numeric.integer.nova

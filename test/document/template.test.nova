@@ -1,0 +1,105 @@
+# SYNTAX TEST "source.nova" "templates (§9)"
+@template 0.1
+# <- meta.template.nova punctuation.definition.directive.nova
+#^^^^^^^^ meta.template.nova keyword.control.directive.nova
+#         ^^^ constant.numeric.version.nova
+@param env: string                       # required parameter
+#^^^^^ meta.directive.param.nova keyword.control.directive.nova
+#      ^^^ variable.parameter.nova
+#           ^^^^^^ support.type.builtin.nova-schema
+#                                        ^ comment.line.number-sign.nova
+@param replicas: u16 @range(1..50) = 2
+#                ^^^ support.type.builtin.nova-schema
+#                     ^^^^^ entity.other.attribute-name.nova-schema
+#                            ^^ keyword.operator.range.nova-schema
+#                                  ^ keyword.operator.assignment.nova-schema
+#                                    ^ meta.default-value.nova-schema constant.numeric.integer.nova
+@param owner?: string
+#           ^ keyword.operator.optional.nova
+@param services: list<string>
+#                ^^^^ support.type.builtin.generic.nova-schema
+@import "base.nova" as base
+#^^^^^^ keyword.control.directive.nova
+#       ^^^^^^^^^^^ string.quoted.double.nova
+#                   ^^ keyword.control.as.nova
+#                      ^^^^ variable.other.constant.nova
+@let registry = "ghcr.io/example"
+#^^^ keyword.control.directive.nova
+#    ^^^^^^^^ variable.other.constant.nova
+#             ^ keyword.operator.assignment.nova
+#               ^^^^^^^^^^^^^^^^^ string.quoted.double.nova
+@let defaults:
+#    ^^^^^^^^ variable.other.constant.nova
+  enabled: true
+# ^^^^^^^ entity.name.tag.nova
+  replicas: $replicas
+#           ^ variable.other.reference.nova punctuation.definition.variable.nova
+#            ^^^^^^^^ variable.other.reference.nova
+
+environment: $env
+#            ^^^^ variable.other.reference.nova
+region: $base.region
+#        ^^^^ variable.other.reference.nova
+#            ^ punctuation.accessor.nova
+#             ^^^^^^ variable.other.reference.nova variable.other.member.nova
+first_port: $svc.ports[0]
+#                     ^ punctuation.definition.selector.begin.nova
+#                      ^ constant.numeric.integer.nova
+image: "${registry}/app:${env}-v2 $${literal} \$x"
+#       ^^ meta.embedded.interpolation.nova punctuation.section.interpolation.begin.nova
+#         ^^^^^^^^ meta.embedded.interpolation.nova variable.other.interpolation.nova
+#                 ^ punctuation.section.interpolation.end.nova
+#                  ^^^^^ string.quoted.double.nova - meta.embedded.interpolation.nova
+#                                 ^^^ constant.character.escape.dollar.nova
+#                                             ^^ constant.character.escape.nova
+script: |
+  echo ${env}
+# ^^^^ string.unquoted.block.nova
+#      ^^ string.unquoted.block.nova meta.embedded.interpolation.nova
+#        ^^^ variable.other.interpolation.nova
+"app-${env}": $env
+#    ^^ entity.name.tag.nova
+services:
+  @for name in $services:
+# ^ meta.control.for.nova punctuation.definition.keyword.nova
+#  ^^^ keyword.control.loop.for.nova
+#      ^^^^ variable.other.loop.nova
+#           ^^ keyword.control.in.nova
+#              ^^^^^^^^^ variable.other.reference.nova
+#                       ^ meta.control.for.nova punctuation.separator.key-value.nova
+    - ...$defaults
+#     ^^^ keyword.operator.spread.nova
+#        ^^^^^^^^^ variable.other.reference.nova
+      id: $name
+#     ^^ entity.name.tag.nova
+  @for i, svc in $base.services:   # with index
+#      ^ variable.other.loop.nova
+#       ^ punctuation.separator.comma.nova
+#         ^^^ variable.other.loop.nova
+#                                  ^ comment.line.number-sign.nova
+    - id: "svc-${i}"
+#                ^ variable.other.interpolation.nova
+  @if $metrics and not ($env == production or $env != dev):
+#  ^^ meta.control.conditional.nova keyword.control.conditional.nova
+#              ^^^ keyword.operator.logical.nova
+#                  ^^^ keyword.operator.logical.nova
+#                            ^^ keyword.operator.comparison.nova
+#                               ^^^^^^^^^^ string.unquoted.flow.nova
+#                                          ^^ keyword.operator.logical.nova
+#                                                  ^^ keyword.operator.comparison.nova
+#                                                         ^ punctuation.separator.key-value.nova
+    - id: metrics
+  @else if $env == staging:
+#  ^^^^ keyword.control.conditional.nova
+#       ^^ keyword.control.conditional.nova
+    - id: metrics-lite
+  @else:
+#  ^^^^ keyword.control.conditional.nova
+#      ^ punctuation.separator.key-value.nova
+    - id: noop
+extra:
+  ...$defaults
+# ^^^ keyword.operator.spread.nova
+#    ^^^^^^^^^ variable.other.reference.nova
+  owner_set: [...$xs, 1]
+#             ^^^ meta.flow.list.nova keyword.operator.spread.nova

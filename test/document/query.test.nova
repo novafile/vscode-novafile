@@ -1,0 +1,9 @@
+# SYNTAX TEST "source.nova" "query documents and path filters"
+@get items[?price<10].name
+#^^^ keyword.control.directive.nova
+#    ^^^^^ variable.other.member.nova
+#          ^ keyword.operator.filter.nova
+#           ^^^^^ variable.other.member.nova
+#                ^ keyword.operator.comparison.nova
+#                 ^^ constant.numeric.integer.nova
+#                     ^^^^ variable.other.member.nova

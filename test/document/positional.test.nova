@@ -1,0 +1,24 @@
+# SYNTAX TEST "source.nova" "positional profile (§4.12)"
+@schema infrastructure@1.0.0#baf8ad5c15586601
+#                            ^^^^^^^^^^^^^^^^ constant.other.fingerprint.nova
+@mode positional
+#^^^^ keyword.control.directive.nova
+#     ^^^^^^^^^^ support.constant.directive-argument.nova
+- production
+# <- meta.list.item.nova punctuation.definition.list.item.nova
+# ^^^^^^^^^^ string.unquoted.plain.nova
+- @timestamp("2026-11-17T16:00:00Z")
+#  ^^^^^^^^^ support.function.typed-literal.nova
+- !active
+# ^^^^^^^ constant.other.enum.variant.nova
+-
+  - (auth,ghcr.io/example/auth:v2,8080,3,true,!_)
+#   ^ meta.flow.tuple.nova punctuation.definition.tuple.begin.nova
+#    ^^^^ meta.flow.tuple.nova string.unquoted.flow.nova
+#         ^^^^^^^^^^^^^^^^^^^^^^^ meta.flow.tuple.nova string.unquoted.flow.nova
+#                                 ^^^^ meta.flow.tuple.nova constant.numeric.integer.nova
+#                                        ^^^^ meta.flow.tuple.nova constant.language.boolean.nova
+#                                             ^^ meta.flow.tuple.nova constant.other.enum.variant.nova
+  - (api,ghcr.io/example/api:v5,3000,5,true,@set[public,edge])
+#                                           ^^^^^ meta.flow.set.nova
+#                                                ^^^^^^ meta.flow.set.nova string.unquoted.flow.nova

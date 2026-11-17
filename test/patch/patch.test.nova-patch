@@ -1,0 +1,60 @@
+# SYNTAX TEST "source.nova.patch" "patch documents (§7.4)"
+# Scale the API service; conditional on the current value.
+# <- comment.line.number-sign.nova punctuation.definition.comment.nova
+@patch infrastructure@1.0.0 sha256:91cf16db2f4a
+# <- punctuation.definition.directive.nova
+#^^^^^ keyword.control.directive.patch.nova
+#      ^^^^^^^^^^^^^^ entity.name.type.schema.nova
+#                     ^^^^^ constant.numeric.version.nova
+#                           ^^^^^^^^^^^^^^^^^^^ constant.other.revision.nova
+@base sha256:91cf16db2f4a
+#^^^^ keyword.control.directive.nova
+#     ^^^^^^^^^^^^^^^^^^^ constant.other.revision.nova
+@scope services[id=api]
+#^^^^^ keyword.control.directive.nova
+#      ^^^^^^^^ variable.other.member.nova
+services[id=api].replicas: 5 -> 8
+# <------- meta.patch.operation.replace.nova meta.path.nova variable.other.member.nova
+#       ^ meta.selector.nova punctuation.definition.selector.begin.nova
+#        ^^ meta.selector.nova variable.other.member.nova
+#           ^^^ meta.selector.nova string.unquoted.flow.nova
+#               ^ punctuation.accessor.nova
+#                ^^^^^^^^ variable.other.member.nova
+#                        ^ punctuation.separator.key-value.nova
+#                          ^ constant.numeric.integer.nova
+#                            ^^ keyword.operator.arrow.nova
+#                               ^ constant.numeric.integer.nova
+image: "ghcr.io/example/api:v5" -> "ghcr.io/example/api:v6"
+# <----- variable.other.member.nova
+#      ^^^^^^^^^^^^^^^^^^^^^^^^ string.quoted.double.nova
+#                               ^^ keyword.operator.arrow.nova
+= replicas: 8
+# <- meta.patch.operation.nova keyword.operator.patch.nova
+# ^^^^^^^^ meta.path.nova variable.other.member.nova
+#           ^ constant.numeric.integer.nova
++ tags: canary
+# <- keyword.operator.patch.nova
+#       ^^^^^^ string.unquoted.flow.nova
++ services: {id: metrics, port: 9090}
+#           ^ meta.flow.record.nova punctuation.definition.record.begin.nova
+#            ^^ entity.name.tag.nova
+- services[2]
+# <- keyword.operator.patch.nova
+#          ^ meta.selector.nova constant.numeric.integer.nova
+- tags[canary]: canary
+#               ^^^^^^ string.unquoted.flow.nova
+? enabled: true
+# <- keyword.operator.patch.nova
+# ^^^^^^^ variable.other.member.nova
+#          ^^^^ constant.language.boolean.nova
+? status
+# ^^^^^^ variable.other.member.nova
+= deployed_at: @timestamp("2026-11-17T16:00:00Z")
+#               ^^^^^^^^^ support.function.typed-literal.nova
+= status: !failed("disk full")
+#         ^^^^^^^ constant.other.enum.variant.nova
++ ports: [
+    80,
+#   ^^ meta.flow.list.nova constant.numeric.integer.nova
+    443,
+  ]

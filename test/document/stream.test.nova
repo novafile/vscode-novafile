@@ -1,0 +1,12 @@
+# SYNTAX TEST "source.nova" "text streams and single flow-value documents"
+{id: a, n: 1}
+# <- meta.flow.record.nova punctuation.definition.record.begin.nova
+#^^ meta.flow.record.nova entity.name.tag.nova
+---
+# <--- meta.separator.document.nova
+[1, 2/4, -0]
+#   ^^^ constant.numeric.rational.nova
+#        ^^ constant.numeric.integer.nova
+---
+- a
+# <- punctuation.definition.list.item.nova

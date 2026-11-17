@@ -1,0 +1,55 @@
+# SYNTAX TEST "source.nova" "block strings and tables"
+script: |               # keep: content plus one final newline
+# <------ entity.name.tag.nova
+#       ^ keyword.control.flow.block-scalar.nova
+#                       ^ comment.line.number-sign.nova
+  echo "hello"  # not a comment
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ string.unquoted.block.nova - comment.line.number-sign.nova string.quoted.double.nova
+    indented: line
+#   ^^^^^^^^^^^^^^ string.unquoted.block.nova - entity.name.tag.nova
+
+  after a blank line
+# ^^^^^^^^^^^^^^^^^^ string.unquoted.block.nova
+notes: |-
+#      ^^ keyword.control.flow.block-scalar.nova
+  first ${not_interpolated}
+#       ^^^^^^^^^^^^^^^^^^^ string.unquoted.block.nova - meta.embedded.interpolation.nova
+  second
+# ^^^^^^ string.unquoted.block.nova
+key_after_block: 1
+# <--------------- entity.name.tag.nova - string.unquoted.block.nova
+list:
+  - |
+#   ^ keyword.control.flow.block-scalar.nova
+    item text
+#   ^^^^^^^^^ string.unquoted.block.nova
+  - key: |-
+#   ^^^ entity.name.tag.nova
+#        ^^ keyword.control.flow.block-scalar.nova
+      nested text
+#     ^^^^^^^^^^^ string.unquoted.block.nova
+  - after
+#   ^^^^^ string.unquoted.plain.nova - string.unquoted.block.nova
+services[2]{id,image,"odd col",port}:
+# <-------- meta.table.nova entity.name.tag.nova
+#       ^ punctuation.definition.table.count.begin.nova
+#        ^ constant.numeric.integer.table.count.nova
+#         ^ punctuation.definition.table.count.end.nova
+#          ^ punctuation.definition.table.columns.begin.nova
+#           ^^ support.type.property-name.table.nova
+#              ^^^^^ support.type.property-name.table.nova
+#                    ^^^^^^^^^ support.type.property-name.table.nova
+#                              ^^^^ support.type.property-name.table.nova
+#                                  ^ punctuation.definition.table.columns.end.nova
+#                                   ^ punctuation.separator.key-value.nova
+  auth, ghcr.io/example/auth:v2, "a, b", 8080
+# ^^^^ meta.table.nova meta.table.row.nova string.unquoted.flow.nova
+#     ^ meta.table.row.nova punctuation.separator.comma.nova
+#       ^^^^^^^^^^^^^^^^^^^^^^^ meta.table.row.nova string.unquoted.flow.nova
+#                                ^^^^^^ meta.table.row.nova string.quoted.double.nova
+#                                        ^^^^ meta.table.row.nova constant.numeric.integer.nova
+  api, ghcr.io/example/api:v5, , null   # empty cell = absent
+#                                ^^^^ meta.table.row.nova constant.language.null.nova
+#                                       ^ comment.line.number-sign.nova
+next: done
+# <---- entity.name.tag.nova - meta.table.nova

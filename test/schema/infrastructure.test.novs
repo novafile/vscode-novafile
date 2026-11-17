@@ -1,0 +1,123 @@
+# SYNTAX TEST "source.nova.schema" "schema language (§6.1)"
+@schema infrastructure@1.0.0          # name and version
+# <- punctuation.definition.directive.nova
+#^^^^^^ keyword.control.directive.schema.nova
+#       ^^^^^^^^^^^^^^ entity.name.type.schema.nova
+#                      ^^^^^ constant.numeric.version.nova
+#                                     ^ comment.line.number-sign.nova
+@root Infrastructure
+#^^^^ keyword.control.directive.nova
+#     ^^^^^^^^^^^^^^ entity.name.type.nova-schema
+
+type Port = u16 @range(1..65535)   # alias
+# <--- storage.type.alias.nova-schema
+#    ^^^^ entity.name.type.alias.nova-schema
+#         ^ keyword.operator.assignment.nova-schema
+#           ^^^ support.type.builtin.nova-schema
+#               ^ meta.attribute.nova-schema punctuation.definition.attribute.nova-schema
+#                ^^^^^ entity.other.attribute-name.nova-schema
+#                      ^ constant.numeric.nova-schema
+#                       ^^ keyword.operator.range.nova-schema
+#                         ^^^^^ constant.numeric.nova-schema
+#                                  ^ comment.line.number-sign.nova
+type Ratio = rational @range(0..1/2)
+#            ^^^^^^^^ support.type.builtin.nova-schema
+#                               ^^^ constant.numeric.nova-schema
+type Pair = (string, i64)?
+#           ^ punctuation.definition.tuple.begin.nova-schema
+#            ^^^^^^ support.type.builtin.nova-schema
+#                  ^ punctuation.separator.comma.nova-schema
+#                    ^^^ support.type.builtin.nova-schema
+#                       ^ punctuation.definition.tuple.end.nova-schema
+#                        ^ storage.modifier.nullable.nova-schema
+
+record Service:
+# <------ storage.type.record.nova-schema
+#      ^^^^^^^ entity.name.type.record.nova-schema
+#             ^ punctuation.separator.key-value.nova-schema
+  id: string @key @id(1)
+# ^^ meta.field.nova-schema variable.other.property.nova-schema
+#     ^^^^^^ support.type.builtin.nova-schema
+#            ^^^^ meta.attribute.nova-schema
+#             ^^^ entity.other.attribute-name.nova-schema
+#                  ^^ entity.other.attribute-name.nova-schema
+#                     ^ constant.numeric.nova-schema
+  name: string @len(..64, utf8) @id(2)
+#               ^^^ entity.other.attribute-name.nova-schema
+#                   ^^ keyword.operator.range.nova-schema
+#                     ^^ constant.numeric.nova-schema
+#                       ^ punctuation.separator.comma.nova-schema
+#                         ^^^^ support.constant.unit.nova-schema
+  port: Port @id(3)
+#       ^^^^ entity.name.type.nova-schema
+  enabled: bool @id(5) = true      # default
+#                      ^ keyword.operator.assignment.nova-schema
+#                        ^^^^ meta.default-value.nova-schema constant.language.boolean.nova
+#                                  ^ comment.line.number-sign.nova
+  tags?: set<string> @id(6)        # optional field
+# ^^^^ variable.other.property.nova-schema
+#     ^ keyword.operator.optional.nova-schema
+#        ^^^ support.type.builtin.generic.nova-schema
+#           ^ punctuation.definition.typeparameters.begin.nova-schema
+#                  ^ punctuation.definition.typeparameters.end.nova-schema
+  labels: map<string @len(1..8), int> = @map{}
+#         ^^^ support.type.builtin.generic.nova-schema
+#                     ^^^ entity.other.attribute-name.nova-schema
+#                                ^^^ support.type.builtin.nova-schema
+#                                        ^^^ meta.default-value.nova-schema support.type.map.nova
+  ports: list<u16 @range(1..1024)> = [80, 443]
+#        ^^^^ support.type.builtin.generic.nova-schema
+#                                     ^^ meta.default-value.nova-schema constant.numeric.integer.nova
+  owner: string? @deprecated = null
+#              ^ storage.modifier.nullable.nova-schema
+#                 ^^^^^^^^^^ entity.other.attribute-name.nova-schema
+#                              ^^^^ constant.language.null.nova
+  "odd field": any = "x"
+# ^^^^^^^^^^^ variable.other.property.nova-schema
+#              ^^^ support.type.builtin.nova-schema
+#                    ^^^ string.quoted.double.nova
+
+record Extensible @open:
+#      ^^^^^^^^^^ entity.name.type.record.nova-schema
+#                 ^^^^^ storage.modifier.open.nova-schema
+  timeout: duration = @duration("30s")
+#          ^^^^^^^^ support.type.builtin.nova-schema
+#                      ^^^^^^^^ support.function.typed-literal.nova
+
+enum Status:                       # also: enum Status = a | b
+# <---- storage.type.enum.nova-schema
+#    ^^^^^^ entity.name.type.enum.nova-schema
+  active
+# ^^^^^^ constant.other.enum.variant.nova-schema
+  draining   # comment
+# ^^^^^^^^ constant.other.enum.variant.nova-schema
+#            ^ comment.line.number-sign.nova
+  failed(string)                   # variant with a payload
+# ^^^^^^ constant.other.enum.variant.nova-schema
+#       ^ punctuation.section.parens.begin.nova-schema
+#        ^^^^^^ support.type.builtin.nova-schema
+
+enum Health = up | down(string) | unknown
+# <---- storage.type.enum.nova-schema
+#    ^^^^^^ entity.name.type.enum.nova-schema
+#           ^ keyword.operator.assignment.nova-schema
+#             ^^ constant.other.enum.variant.nova-schema
+#                ^ keyword.operator.union.nova-schema
+#                  ^^^^ constant.other.enum.variant.nova-schema
+#                       ^^^^^^ support.type.builtin.nova-schema
+#                                 ^^^^^^^ constant.other.enum.variant.nova-schema
+
+record Infrastructure:
+  environment: string @id(1)
+  deployed_at: timestamp @id(3)
+#              ^^^^^^^^^ support.type.builtin.nova-schema
+  status: Status @id(4) = !active
+#         ^^^^^^ entity.name.type.nova-schema
+#                         ^^^^^^^ meta.default-value.nova-schema constant.other.enum.variant.nova
+  services: Service[] @id(5)
+#           ^^^^^^^ entity.name.type.nova-schema
+#                  ^^ storage.modifier.array.nova-schema
+  amounts: list<decimal>[]? = []
+#               ^^^^^^^ support.type.builtin.nova-schema
+#                       ^^ storage.modifier.array.nova-schema
+#                         ^ storage.modifier.nullable.nova-schema
