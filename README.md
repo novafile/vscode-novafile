@@ -82,15 +82,15 @@ The extension also sets `editor.tabSize: 2` and `editor.insertSpaces: true` for 
 ## Development
 
 ```sh
-npm install
-npm run compile        # type-check and bundle to dist/ with esbuild
-npm test               # grammar tests (vscode-tmgrammar-test)
-npm run package        # build vscode-novafile-<version>.vsix with @vscode/vsce
+yarn install
+yarn compile    # type-check and bundle to dist/ with esbuild
+yarn test       # grammar tests (vscode-tmgrammar-test)
+yarn package    # build vscode-novafile-<version>.vsix with @vscode/vsce
 ```
 
 Press <kbd>F5</kbd> in VS Code to start an Extension Development Host.
 
-The TextMate grammars in `syntaxes/` are generated from `scripts/build-grammars.mjs`, which keeps the regular expressions readable. Edit that file, then run `npm run build:grammars` and commit both. Grammar tests live in `test/`. Each file starts with a `# SYNTAX TEST "<scope>"` header, and lines with `^` or `<-` markers assert the scopes of the source line above them.
+The TextMate grammars in `syntaxes/` are generated from `scripts/build-grammars.mjs`, which keeps the regular expressions readable. Edit that file, then run `yarn build:grammars` and commit both. Grammar tests live in `test/`. Each file starts with a `# SYNTAX TEST "<scope>"` header, and lines with `^` or `<-` markers assert the scopes of the source line above them.
 
 ## Links
 

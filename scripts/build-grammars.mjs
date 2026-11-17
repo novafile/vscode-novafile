@@ -2,7 +2,7 @@
 // Generates the TextMate grammars in ../syntaxes from the definitions below.
 //
 // The grammars are written as JavaScript so that regular expressions can use
-// String.raw instead of double-escaped JSON. Run `npm run build:grammars`
+// String.raw instead of double-escaped JSON. Run `yarn build:grammars`
 // after editing this file; the generated JSON is committed so that the
 // extension needs no build step to load it.
 

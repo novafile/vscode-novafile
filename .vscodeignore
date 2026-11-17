@@ -11,6 +11,8 @@ test/**
 **/*.ts
 esbuild.mjs
 tsconfig.json
-package-lock.json
+yarn.lock
+.yarnrc.yml
+.yarn/**
 .gitignore
 *.vsix

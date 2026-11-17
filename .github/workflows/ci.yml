@@ -23,21 +23,26 @@ jobs:
           node-version: 26
           package-manager-cache: false
 
-      - run: npm ci
+      # Node 25+ no longer bundles corepack. The version is exact, and corepack
+      # then checks Yarn against the hash in package.json's packageManager.
+      - name: Enable corepack
+        run: npm install --global corepack@0.36.0 && corepack enable # zizmor: ignore[adhoc-packages]
+
+      - run: yarn install --immutable
 
       - name: Check generated grammars are up to date
         run: |
-          npm run build:grammars
+          yarn build:grammars
           git diff --exit-code -- syntaxes/
 
       - name: Compile
-        run: npm run compile
+        run: yarn compile
 
       - name: Grammar tests
-        run: npm test
+        run: yarn test
 
       - name: Package
-        run: npx @vscode/vsce package --out vscode-novafile.vsix
+        run: yarn vsce package --no-dependencies --out vscode-novafile.vsix
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
