@@ -4,7 +4,7 @@
   "description": "Language support for NOVA (Notation for Objects, Values & Agents): documents, schemas (.novs), templates and patches, with syntax highlighting and the nvf-lsp language server.",
   "version": "0.1.0",
   "publisher": "novafile",
-  "license": "EUPL-1.2 OR MIT OR Apache-2.0",
+  "license": "(EUPL-1.2 OR MPL-2.0)",
   "homepage": "https://github.com/novafile/vscode-novafile#readme",
   "repository": {
     "type": "git",

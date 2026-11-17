@@ -100,4 +100,4 @@ The TextMate grammars in `syntaxes/` are generated from `scripts/build-grammars.
 
 ## License
 
-Licensed under any of the [EUPL-1.2](LICENSE-EUPL), [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE) licenses, at your option.
+Licensed under either the [EUPL-1.2](LICENSE-EUPL) or the [MPL-2.0](LICENSE-MPL), at your option (SPDX-License-Identifier: `EUPL-1.2 OR MPL-2.0`).
