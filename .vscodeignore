@@ -10,6 +10,8 @@ test/**
 **/*.map
 **/*.ts
 esbuild.mjs
+Taskfile*.yaml
+.task/**
 tsconfig.json
 yarn.lock
 .yarnrc.yml

@@ -1,0 +1,90 @@
+# https://taskfile.dev
+# This project uses Yarn 4 via corepack, not npm.
+version: '3'
+
+tasks:
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list --sort=none
+    silent: true
+
+  install:
+    desc: Install dependencies
+    preconditions:
+      - sh: command -v yarn
+        msg: "yarn not found — install Node.js and corepack (npm install --global corepack), then run: corepack enable"
+    sources: [package.json, yarn.lock, .yarnrc.yml]
+    generates: [node_modules/.yarn-state.yml]
+    cmds:
+      - yarn install
+
+  build:
+    desc: Type-check and bundle to dist/ (development build with source maps)
+    aliases: [compile]
+    deps: [install]
+    cmds:
+      - yarn compile
+
+  build:release:
+    desc: Type-check and bundle to dist/ (minified, as packaged)
+    deps: [install]
+    cmds:
+      - yarn compile:prod
+
+  dev:
+    desc: Rebundle on change (use with F5 in VS Code)
+    aliases: [watch]
+    deps: [install]
+    cmds:
+      - yarn watch
+
+  grammars:
+    desc: Regenerate syntaxes/ from scripts/build-grammars.mjs
+    deps: [install]
+    cmds:
+      - yarn build:grammars
+
+  test:
+    desc: Run the grammar tests
+    deps: [install]
+    cmds:
+      - yarn test
+
+  lint:
+    desc: Lint the GitHub Actions workflows with actionlint and zizmor
+    preconditions:
+      - sh: command -v actionlint
+        msg: "actionlint not found — see https://github.com/rhysd/actionlint/blob/main/docs/install.md"
+      - sh: command -v zizmor
+        msg: "zizmor not found — see https://docs.zizmor.sh/installation/"
+    cmds:
+      - actionlint
+      - zizmor .
+
+  check:
+    desc: Type-check, verify the generated grammars are committed, lint workflows
+    deps: [install]
+    cmds:
+      - yarn typecheck
+      - yarn build:grammars
+      - git diff --exit-code -- syntaxes/
+      - task: lint
+
+  package:
+    desc: Build vscode-novafile-<version>.vsix
+    deps: [install]
+    cmds:
+      - yarn package
+
+  ci:
+    desc: Run the CI sequence locally (check, test, package)
+    cmds:
+      - task: check
+      - task: test
+      - task: package
+
+  clean:
+    desc: Remove build output and packaged .vsix files
+    cmds:
+      - rm -rf dist out *.vsix
