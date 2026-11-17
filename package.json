@@ -5,7 +5,7 @@
   "version": "0.1.0",
   "publisher": "novafile",
   "license": "(EUPL-1.2 OR MPL-2.0) AND Apache-2.0",
-  "homepage": "https://github.com/novafile/vscode-novafile#readme",
+  "homepage": "https://novafile.dev/",
   "repository": {
     "type": "git",
     "url": "https://github.com/novafile/vscode-novafile.git"

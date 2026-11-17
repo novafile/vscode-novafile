@@ -1,6 +1,6 @@
 # NOVA for Visual Studio Code
 
-Language support for [NOVA](https://github.com/novafile/spec), the *Notation for Objects, Values & Agents*: a typed, indentation-exact serialization format with schemas, conditional patches and total templates.
+Language support for [NOVA](https://novafile.dev/), the *Notation for Objects, Values & Agents*: a typed, indentation-exact serialization format with schemas, conditional patches and total templates.
 
 The extension provides syntax highlighting for every kind of NOVA file and connects VS Code to the `nvf-lsp` language server from the [reference implementation](https://github.com/novafile/nova).
 
@@ -94,6 +94,7 @@ The TextMate grammars in `syntaxes/` are generated from `scripts/build-grammars.
 
 ## Links
 
+- Website: <https://novafile.dev/>
 - Specification: <https://github.com/novafile/spec> ([SPEC.md](https://github.com/novafile/spec/blob/main/SPEC.md))
 - Reference implementation, CLI `nvf` and language server `nvf-lsp`: <https://github.com/novafile/nova>
 - Issues: <https://github.com/novafile/vscode-novafile/issues>
