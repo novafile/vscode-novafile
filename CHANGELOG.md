@@ -4,7 +4,7 @@ All notable changes to the NOVA extension are documented here. The format follow
 
 ## [Unreleased]
 
-## [0.1.0] - 2026-11-17
+## [0.1.0] - 2026-11-18
 
 ### Added
 
@@ -13,3 +13,6 @@ All notable changes to the NOVA extension are documented here. The format follow
 - Language configuration: `#` comments, bracket pairs, auto-closing, 2-space indentation and on-enter rules, indentation-based folding.
 - Language client for the `nvf-lsp` server (diagnostics, hover, document symbols, completion, formatting), with the settings `novafile.server.path`, `novafile.server.args`, `novafile.server.enable` and `novafile.trace.server`, plus install instructions when the binary is missing.
 - Commands **NOVA: Restart Language Server** and **NOVA: Show Language Server Output**.
+
+[Unreleased]: https://github.com/novafile/vscode-novafile/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/novafile/vscode-novafile/releases/tag/v0.1.0
