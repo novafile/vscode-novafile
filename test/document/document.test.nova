@@ -2,7 +2,7 @@
 # A comment line
 # <- comment.line.number-sign.nova punctuation.definition.comment.nova
 # ^^^^^^^^^^^^^^ comment.line.number-sign.nova
-@nova 1.0
+@nova 0.1
 # <- punctuation.definition.directive.nova
 #^^^^ keyword.control.directive.nova
 #     ^^^ constant.numeric.version.nova
