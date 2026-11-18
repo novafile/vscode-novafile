@@ -4,9 +4,11 @@ All notable changes to the NOVA extension are documented here. The format follow
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-18
+
 ### Added
 
-- Bundled WebAssembly (WASI) build of `nvf-lsp`, used when no native server is configured or on `PATH`. The language server now also works in VS Code for the Web. Requires the `ms-vscode.wasm-wasi-core` extension, which is installed as a dependency.
+- Bundled WebAssembly (WASI) build of `nvf-lsp` 0.2.0, used when no native server is configured or on `PATH`. The language server now also works in VS Code for the Web. Requires the `ms-vscode.wasm-wasi-core` extension, which is installed as a dependency.
 
 ### Changed
 
@@ -23,5 +25,6 @@ All notable changes to the NOVA extension are documented here. The format follow
 - Language client for the `nvf-lsp` server (diagnostics, hover, document symbols, completion, formatting), with the settings `novafile.server.path`, `novafile.server.args`, `novafile.server.enable` and `novafile.trace.server`, plus install instructions when the binary is missing.
 - Commands **NOVA: Restart Language Server** and **NOVA: Show Language Server Output**.
 
-[Unreleased]: https://github.com/novafile/vscode-novafile/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/novafile/vscode-novafile/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/novafile/vscode-novafile/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/novafile/vscode-novafile/releases/tag/v0.1.0
