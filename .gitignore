@@ -7,3 +7,4 @@ out/
 .yarn/
 .pnp.*
 .task/
+server/*.wasm

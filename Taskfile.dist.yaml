@@ -77,9 +77,28 @@ tasks:
     cmds:
       - scripts/screenshot.sh
 
+  server:wasm:
+    desc: "Download and verify the WASI nvf-lsp release asset into server/ (task server:wasm TAG=v0.1.0)"
+    requires:
+      vars: [TAG]
+    preconditions:
+      - sh: command -v gh
+        msg: "gh not found — see https://cli.github.com/"
+    vars:
+      DIR: .task/nvf-lsp-{{.TAG}}
+    cmds:
+      - rm -rf {{.DIR}} && mkdir -p {{.DIR}} server
+      - gh release download {{.TAG}} -R novafile/nova -D {{.DIR}} -p "nvf-lsp-{{.TAG}}.wasm" -p SHA256SUMS
+      - cd {{.DIR}} && grep -E "[ *]nvf-lsp-{{.TAG}}\.wasm$" SHA256SUMS | sha256sum --check --strict -
+      - gh attestation verify {{.DIR}}/nvf-lsp-{{.TAG}}.wasm -R novafile/nova
+      - cp {{.DIR}}/nvf-lsp-{{.TAG}}.wasm server/nvf-lsp.wasm
+
   package:
     desc: Build vscode-novafile-<version>.vsix
     deps: [install]
+    preconditions:
+      - sh: test -f server/nvf-lsp.wasm
+        msg: "server/nvf-lsp.wasm missing — run: task server:wasm TAG=<nova release tag>"
     cmds:
       - yarn package
 

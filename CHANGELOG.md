@@ -4,9 +4,14 @@ All notable changes to the NOVA extension are documented here. The format follow
 
 ## [Unreleased]
 
+### Added
+
+- Bundled WebAssembly (WASI) build of `nvf-lsp`, used when no native server is configured or on `PATH`. The language server now also works in VS Code for the Web. Requires the `ms-vscode.wasm-wasi-core` extension, which is installed as a dependency.
+
 ### Changed
 
 - `novafile.server.path` and `novafile.server.args` are read from user settings only (scope `machine`); workspace settings can no longer choose the server binary. Relative paths are rejected. The default for `novafile.server.path` is now empty.
+- Requires VS Code 1.91 or newer.
 
 ## [0.1.0] - 2026-11-18
 

@@ -15,7 +15,7 @@
     "url": "https://github.com/novafile/vscode-novafile/issues"
   },
   "engines": {
-    "vscode": "^1.82.0"
+    "vscode": "^1.91.0"
   },
   "categories": [
     "Programming Languages",
@@ -31,8 +31,12 @@
     "configuration"
   ],
   "main": "./dist/extension.js",
+  "browser": "./dist/browser.js",
   "activationEvents": [
     "onLanguage:diff"
+  ],
+  "extensionDependencies": [
+    "ms-vscode.wasm-wasi-core"
   ],
   "contributes": {
     "languages": [
@@ -108,7 +112,7 @@
           "type": "string",
           "default": "",
           "scope": "machine",
-          "markdownDescription": "Path to the `nvf-lsp` language server binary: absolute, `~/…`, or a bare name looked up on `PATH`. Read from user settings only; workspace settings cannot change it. When empty, `nvf-lsp` is looked up on `PATH`. Install it with `cargo install novafile-lsp`."
+          "markdownDescription": "Path to a native `nvf-lsp` language server binary: absolute, `~/…`, or a bare name looked up on `PATH`. Read from user settings only; workspace settings cannot change it. When empty, `nvf-lsp` on `PATH` is used if present, otherwise the bundled WebAssembly build. Install the native server with `cargo install novafile-lsp`."
         },
         "novafile.server.args": {
           "type": "array",
@@ -175,11 +179,12 @@
     "build:grammars": "node scripts/build-grammars.mjs"
   },
   "dependencies": {
-    "vscode-languageclient": "^9.0.1"
+    "@vscode/wasm-wasi": "^1.0.2",
+    "vscode-languageclient": "^11.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
-    "@types/vscode": "~1.82.0",
+    "@types/vscode": "~1.91.0",
     "@vscode/vsce": "^3.2.0",
     "esbuild": "^0.24.0",
     "typescript": "^5.6.0",

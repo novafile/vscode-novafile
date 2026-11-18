@@ -56,9 +56,11 @@ ext install novafile.vscode-novafile
 
 Each [GitHub Release](https://github.com/novafile/vscode-novafile/releases) also carries the `.vsix` with a build provenance attestation; check a download with `gh attestation verify vscode-novafile-X.Y.Z.vsix -R novafile/vscode-novafile`.
 
-## Installing the language server
+## Language server
 
-The extension starts `nvf-lsp` and talks to it over stdio. Install it with Cargo:
+The extension ships a WebAssembly build of the `nvf-lsp` language server, so diagnostics, hover, completion and formatting work out of the box, including in VS Code for the Web (vscode.dev, github.dev). It runs through Microsoft's [WASI execution engine](https://marketplace.visualstudio.com/items?itemName=ms-vscode.wasm-wasi-core), which VS Code installs alongside this extension.
+
+A native `nvf-lsp` is faster and is used instead whenever one is available: either `novafile.server.path` is set in your user settings, or `nvf-lsp` is on your `PATH`. Install it with Cargo:
 
 ```sh
 cargo install novafile-lsp                  # from crates.io
@@ -66,7 +68,7 @@ cargo install novafile-lsp                  # from crates.io
 cargo install --path crates/novafile-lsp
 ```
 
-Make sure `~/.cargo/bin` is on your `PATH`, or point `novafile.server.path` in your user settings at the binary. If the server cannot be found, the extension shows an error with these instructions and keeps working as a highlighting-only extension. Run **NOVA: Restart Language Server** after installing or updating it.
+Run **NOVA: Restart Language Server** after installing or updating it. **NOVA: Show Language Server Output** shows which server was started.
 
 The server reads every `.novs` file in the workspace, so a document's `@schema infrastructure@1.0.0` line is validated against the matching schema automatically.
 
@@ -74,7 +76,7 @@ The server reads every `.novs` file in the workspace, so a document's `@schema i
 
 | Setting | Default | Description |
 | --- | --- | --- |
-| `novafile.server.path` | `""` | Path to the language server: absolute, `~/…`, or a bare name looked up on `PATH`. Empty means `nvf-lsp` on `PATH`. |
+| `novafile.server.path` | `""` | Path to a native language server: absolute, `~/…`, or a bare name looked up on `PATH`. Empty means `nvf-lsp` on `PATH`, else the bundled WebAssembly build. |
 | `novafile.server.args` | `[]` | Extra arguments for the server. |
 
 `novafile.server.path` and `novafile.server.args` are read from user (or remote machine) settings only. Workspace settings cannot change them, so opening a repository never makes the extension run a program that the repository chose.
