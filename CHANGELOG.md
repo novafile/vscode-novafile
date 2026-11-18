@@ -4,6 +4,10 @@ All notable changes to the NOVA extension are documented here. The format follow
 
 ## [Unreleased]
 
+### Changed
+
+- `novafile.server.path` and `novafile.server.args` are read from user settings only (scope `machine`); workspace settings can no longer choose the server binary. Relative paths are rejected. The default for `novafile.server.path` is now empty.
+
 ## [0.1.0] - 2026-11-18
 
 ### Added

@@ -66,7 +66,7 @@ cargo install novafile-lsp                  # from crates.io
 cargo install --path crates/novafile-lsp
 ```
 
-Make sure `~/.cargo/bin` is on your `PATH`, or point `novafile.server.path` at the binary. If the server cannot be found, the extension shows an error with these instructions and keeps working as a highlighting-only extension. Run **NOVA: Restart Language Server** after installing or updating it.
+Make sure `~/.cargo/bin` is on your `PATH`, or point `novafile.server.path` in your user settings at the binary. If the server cannot be found, the extension shows an error with these instructions and keeps working as a highlighting-only extension. Run **NOVA: Restart Language Server** after installing or updating it.
 
 The server reads every `.novs` file in the workspace, so a document's `@schema infrastructure@1.0.0` line is validated against the matching schema automatically.
 
@@ -74,8 +74,10 @@ The server reads every `.novs` file in the workspace, so a document's `@schema i
 
 | Setting | Default | Description |
 | --- | --- | --- |
-| `novafile.server.path` | `"nvf-lsp"` | Path to the language server. A bare name is looked up on `PATH`; `~/` and workspace-relative paths work too. |
+| `novafile.server.path` | `""` | Path to the language server: absolute, `~/…`, or a bare name looked up on `PATH`. Empty means `nvf-lsp` on `PATH`. |
 | `novafile.server.args` | `[]` | Extra arguments for the server. |
+
+`novafile.server.path` and `novafile.server.args` are read from user (or remote machine) settings only. Workspace settings cannot change them, so opening a repository never makes the extension run a program that the repository chose.
 | `novafile.server.enable` | `true` | Set to `false` to use highlighting only. |
 | `novafile.trace.server` | `"off"` | `messages` or `verbose` logs LSP traffic to the *NOVA Language Server Trace* output channel. |
 | `novafile.patch.detectByContent` | `true` | Switch `.patch` files that start with `@patch` to NOVA Patch. |

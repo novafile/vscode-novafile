@@ -1,3 +1,5 @@
+import * as fs from "node:fs";
+import * as os from "node:os";
 import * as path from "node:path";
 import * as vscode from "vscode";
 import {
@@ -14,7 +16,7 @@ import {
 const LANGUAGES = ["nova", "nova-patch", "nova-schema"] as const;
 const INSTALL_HINT =
   "Install it with `cargo install novafile-lsp` (or `cargo install --path crates/novafile-lsp` from a checkout of https://github.com/novafile/nova), " +
-  "or set `novafile.server.path` to the binary.";
+  "or set `novafile.server.path` in your user settings to the binary.";
 
 let client: LanguageClient | undefined;
 let outputChannel: vscode.OutputChannel | undefined;
@@ -57,17 +59,51 @@ export async function deactivate(): Promise<void> {
 // ---------------------------------------------------------------------------
 
 function serverCommand(): { command: string; args: string[] } {
+  // `server.path` and `server.args` have `machine` scope, and only the user-level
+  // values are read: a workspace (e.g. a cloned repository's .vscode/settings.json)
+  // must never choose the binary the extension runs.
   const config = vscode.workspace.getConfiguration("novafile");
-  let command = (config.get<string>("server.path") ?? "").trim() || "nvf-lsp";
-  // Allow `~/...` and workspace-relative paths in the setting.
-  if (command.startsWith("~/")) {
-    command = path.join(process.env.HOME ?? process.env.USERPROFILE ?? "", command.slice(2));
-  } else if (command.includes("/") || command.includes("\\")) {
-    const folder = vscode.workspace.workspaceFolders?.[0];
-    if (folder && !path.isAbsolute(command)) command = path.join(folder.uri.fsPath, command);
-  }
-  const args = config.get<string[]>("server.args") ?? [];
+  const configured = config.inspect<string>("server.path")?.globalValue?.trim();
+  const command = configured ? userPath(configured) : (onPath("nvf-lsp") ?? "nvf-lsp");
+  const args = config.inspect<string[]>("server.args")?.globalValue ?? [];
   return { command, args };
+}
+
+/** Resolves the user's setting: absolute, `~/…`, or a bare name looked up on `PATH`. */
+function userPath(value: string): string {
+  if (value === "~" || value.startsWith("~/") || value.startsWith("~\\")) return path.join(os.homedir(), value.slice(1));
+  if (path.isAbsolute(value)) return value;
+  if (!value.includes("/") && !value.includes("\\")) {
+    const found = onPath(value);
+    if (found) return found;
+    throw new Error(`\`${value}\` was not found on PATH`);
+  }
+  // A relative path would resolve against the workspace, which may be untrusted.
+  throw new Error(`\`novafile.server.path\` must be absolute, start with \`~/\`, or be a bare name on PATH (got \`${value}\`)`);
+}
+
+/**
+ * Absolute path of `name` on `PATH`, or undefined. Done here rather than by
+ * `spawn` because Windows also searches the working directory (the workspace)
+ * first; relative `PATH` entries are skipped for the same reason.
+ */
+function onPath(name: string): string | undefined {
+  const exts = process.platform === "win32" ? (process.env.PATHEXT ?? ".EXE;.CMD;.BAT;.COM").split(";") : [""];
+  for (const dir of (process.env.PATH ?? "").split(path.delimiter)) {
+    if (!path.isAbsolute(dir)) continue;
+    for (const ext of exts) {
+      const candidate = path.join(dir, name + ext);
+      try {
+        if (fs.statSync(candidate).isFile()) {
+          fs.accessSync(candidate, fs.constants.X_OK);
+          return candidate;
+        }
+      } catch {
+        // Not here; keep looking.
+      }
+    }
+  }
+  return undefined;
 }
 
 async function startClient(
@@ -84,7 +120,13 @@ async function startClient(
     return;
   }
 
-  const { command, args } = serverCommand();
+  let command: string, args: string[];
+  try {
+    ({ command, args } = serverCommand());
+  } catch (error) {
+    reportStartFailure(String(config.inspect<string>("server.path")?.globalValue), error);
+    return;
+  }
   const executable = { command, args, transport: TransportKind.stdio };
   const serverOptions: ServerOptions = { run: executable, debug: executable };
 
