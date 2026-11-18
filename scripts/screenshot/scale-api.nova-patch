@@ -1,6 +1,6 @@
 # Applies only if replicas is still 5.
-@patch infrastructure@1.0.0 sha256:91cf16db2f4a
-@base sha256:91cf16db2f4a
+@patch infrastructure@1.0.0 sha256:354e552b0367
+@base sha256:354e552b0367
 
 services[id=api].replicas: 5 -> 8
 + services[id=api].tags: canary

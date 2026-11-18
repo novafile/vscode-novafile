@@ -1,4 +1,4 @@
-@nova 1.0
+@nova 0.1
 @schema infrastructure@1.0.0
 # Resolved against the schema.
 environment: production
@@ -15,4 +15,4 @@ services:
     port: 9000
     enabled: true
     timeout: @duration("5s")
-  - {id: metrics, port: 9090, replicas: 1}
+  - {id: metrics, name: Metrics, port: 9090}

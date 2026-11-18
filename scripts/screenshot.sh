@@ -22,8 +22,10 @@ fi
 profile=$(mktemp -d)
 trap 'kill "$pid" 2>/dev/null || true; rm -rf "$profile"' EXIT
 mkdir -p "$profile/User"
-# nvf-lsp is off: without it on PATH VS Code would show an error toast.
-cat > "$profile/User/settings.json" <<'EOF'
+# Without nvf-lsp on PATH the server stays off; VS Code would show an error toast.
+lsp=false
+command -v nvf-lsp >/dev/null && lsp=true
+cat > "$profile/User/settings.json" <<EOF
 {
   "workbench.colorTheme": "Default Dark Modern",
   "workbench.startupEditor": "none",
@@ -48,7 +50,7 @@ cat > "$profile/User/settings.json" <<'EOF'
   "telemetry.telemetryLevel": "off",
   "update.mode": "none",
   "extensions.ignoreRecommendations": true,
-  "novafile.server.enable": false
+  "novafile.server.enable": $lsp
 }
 EOF
 
