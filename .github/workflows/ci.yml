@@ -50,6 +50,11 @@ jobs:
       - name: Grammar tests
         run: yarn test
 
+      - name: Fetch the WASI language server
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: scripts/fetch-server.sh
+
       - name: Package
         run: yarn vsce package --no-dependencies --out vscode-novafile.vsix
 
