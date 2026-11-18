@@ -1,4 +1,4 @@
-// Runs the bundled `server/nvf-lsp.wasm` (wasm32-wasip1-threads) through the
+// Runs the bundled `server/nvf-lsp.wasm` (wasm32-wasip1) through the
 // `ms-vscode.wasm-wasi-core` extension. Works on desktop and in VS Code for the Web.
 //
 // File system layout seen by the server:
@@ -17,10 +17,6 @@ import {
   type MessageTransports,
 } from "vscode-languageclient";
 
-// 64 KiB pages. The module imports shared memory with min 19 and max 16384 pages;
-// cap below that so browsers do not reserve 1 GiB per server.
-const MEMORY: WebAssembly.MemoryDescriptor = { initial: 160, maximum: 4096, shared: true };
-
 export function wasiServer(
   context: vscode.ExtensionContext,
   args: string[],
@@ -38,7 +34,7 @@ export function wasiServer(
       })),
     };
     const module = await wasm.compile(vscode.Uri.joinPath(context.extensionUri, "server", "nvf-lsp.wasm"));
-    const process = await wasm.createProcess("nvf-lsp", module, MEMORY, options);
+    const process = await wasm.createProcess("nvf-lsp", module, options);
     const decoder = new TextDecoder();
     process.stderr?.onData((data) => log?.append(decoder.decode(data)));
     return transports(process.run(), process.stdout!, process.stdin!);
