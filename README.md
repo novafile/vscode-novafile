@@ -46,6 +46,16 @@ Highlighting, comment toggling, bracket matching and indentation work without th
 "files.associations": { "overlays/*.patch": "nova-patch" }
 ```
 
+## Installing
+
+Install the extension from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=novafile.vscode-novafile), or run this in VS Code's Quick Open (<kbd>Ctrl</kbd>+<kbd>P</kbd>):
+
+```text
+ext install novafile.vscode-novafile
+```
+
+Each [GitHub Release](https://github.com/novafile/vscode-novafile/releases) also carries the `.vsix` with a build provenance attestation; check a download with `gh attestation verify vscode-novafile-X.Y.Z.vsix -R novafile/vscode-novafile`.
+
 ## Installing the language server
 
 The extension starts `nvf-lsp` and talks to it over stdio. Install it with Cargo:
