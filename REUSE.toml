@@ -5,5 +5,5 @@ path = ["syntaxes/**", "scripts/build-grammars.mjs"]
 SPDX-License-Identifier = "Apache-2.0"
 
 [[annotations]]
-path = ["test/**/*.test.*"]
+path = ["test/**/*.test.*", "scripts/screenshot/**"]
 SPDX-License-Identifier = "CC0-1.0"

@@ -1,0 +1,9 @@
+# Applies only if replicas is still 5.
+@patch infrastructure@1.0.0 sha256:91cf16db2f4a
+@base sha256:91cf16db2f4a
+
+services[id=api].replicas: 5 -> 8
++ services[id=api].tags: canary
+- services[id=metrics]
+? services[id=auth].enabled: true
+= status: !draining

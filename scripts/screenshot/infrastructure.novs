@@ -1,0 +1,24 @@
+@schema infrastructure@1.0.0
+@root Infrastructure
+
+type Port = u16 @range(1..65535)
+
+record Service:
+  id: string @key @id(1)
+  name: string @len(..64, utf8) @id(2)
+  port: Port @id(3)
+  replicas: u8 @range(1..32) @id(4) = 1
+  enabled: bool @id(5) = true
+  tags?: set<string> @id(6)
+  timeout: duration @id(7) = @duration("30s")
+
+enum Status:
+  active
+  draining
+  failed(string)    # with a payload
+
+record Infrastructure:
+  environment: string @id(1)
+  deployed_at: timestamp @id(3)
+  status: Status @id(4) = !active
+  services: Service[] @id(5)

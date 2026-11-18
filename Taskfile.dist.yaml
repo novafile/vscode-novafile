@@ -71,6 +71,12 @@ tasks:
       - git diff --exit-code -- syntaxes/
       - task: lint
 
+  screenshot:
+    desc: Render images/screenshot.png from scripts/screenshot/ (needs code, xvfb-run, xdotool, ImageMagick)
+    deps: [build]
+    cmds:
+      - scripts/screenshot.sh
+
   package:
     desc: Build vscode-novafile-<version>.vsix
     deps: [install]

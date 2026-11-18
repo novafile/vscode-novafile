@@ -6,8 +6,6 @@ The extension provides syntax highlighting for every kind of NOVA file and conne
 
 ![NOVA document, schema and patch in VS Code](images/screenshot.png)
 
-> *Screenshot placeholder: replace `images/screenshot.png` before publishing.*
-
 ## Features
 
 | | `.nova` documents and templates | `.novs` schemas | patches |
