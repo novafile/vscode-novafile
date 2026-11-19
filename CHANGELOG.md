@@ -4,6 +4,8 @@ All notable changes to the NOVA extension are documented here. The format follow
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-19
+
 ### Changed
 
 - Bundled `nvf-lsp` updated to 0.3.0: schemas support ordered unions (`A | B`) and quoted field names, and the server warns about union members in a questionable order.
@@ -30,6 +32,7 @@ All notable changes to the NOVA extension are documented here. The format follow
 - Language client for the `nvf-lsp` server (diagnostics, hover, document symbols, completion, formatting), with the settings `novafile.server.path`, `novafile.server.args`, `novafile.server.enable` and `novafile.trace.server`, plus install instructions when the binary is missing.
 - Commands **NOVA: Restart Language Server** and **NOVA: Show Language Server Output**.
 
-[Unreleased]: https://github.com/novafile/vscode-novafile/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/novafile/vscode-novafile/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/novafile/vscode-novafile/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/novafile/vscode-novafile/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/novafile/vscode-novafile/releases/tag/v0.1.0
