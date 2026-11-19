@@ -823,6 +823,9 @@ const schemaGrammar = {
     type: {
       patterns: [
         { include: "#attribute" },
+        // A string literal type such as "total-time" (proposal 0004); before
+        // comments can claim the `#` in "#t".
+        { include: "source.nova#string" },
         { match: r`\b(?:${BUILTIN_TYPES})\b(?![\w-])`, name: "support.type.builtin.nova-schema" },
         {
           match: r`\b(list|set|map)\s*(<)`,

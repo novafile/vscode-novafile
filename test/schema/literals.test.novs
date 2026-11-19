@@ -1,0 +1,23 @@
+# SYNTAX TEST "source.nova.schema" "string patterns, literal types and @x- directives"
+@schema pddl@0.1.0
+@x-lint case=kebab
+#^^^^^^ keyword.control.directive.nova
+type Name = string @pattern("[A-Za-z(][)#A-Za-z0-9_-]*")  # name
+#                  ^ punctuation.definition.attribute.nova-schema
+#                   ^^^^^^^ entity.other.attribute-name.nova-schema
+#                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^ string.quoted.double.nova
+#                                                      ^ punctuation.section.arguments.end.nova-schema
+#                                                         ^ comment.line.number-sign.nova
+type FExp = int | "?duration" | "#t" | Name
+#                 ^^^^^^^^^^^ string.quoted.double.nova
+#                             ^ keyword.operator.union.nova-schema
+#                               ^^^^ string.quoted.double.nova
+#                                      ^^^^ entity.name.type.nova-schema
+record R:
+  op?: ("=" | ">=", int, int)
+#       ^^^ string.quoted.double.nova
+#             ^^^^ string.quoted.double.nova
+  maybe?: "x"?   # comment
+#         ^^^ string.quoted.double.nova
+#            ^ storage.modifier.nullable.nova-schema
+#                ^ comment.line.number-sign.nova

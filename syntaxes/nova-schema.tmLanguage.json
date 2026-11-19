@@ -234,6 +234,9 @@
           "include": "#attribute"
         },
         {
+          "include": "source.nova#string"
+        },
+        {
           "match": "\\b(?:any|null|bool|float|decimal|rational|string|bytes|timestamp|duration|int|i8|i16|i32|i64|u8|u16|u32|u64)\\b(?![\\w-])",
           "name": "support.type.builtin.nova-schema"
         },
