@@ -257,6 +257,10 @@
           "name": "storage.modifier.array.nova-schema"
         },
         {
+          "match": "\\|",
+          "name": "keyword.operator.union.nova-schema"
+        },
+        {
           "match": "\\?",
           "name": "storage.modifier.nullable.nova-schema"
         },

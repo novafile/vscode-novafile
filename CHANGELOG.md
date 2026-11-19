@@ -4,6 +4,11 @@ All notable changes to the NOVA extension are documented here. The format follow
 
 ## [Unreleased]
 
+### Changed
+
+- Bundled `nvf-lsp` updated to 0.3.0: schemas support ordered unions (`A | B`) and quoted field names, and the server warns about union members in a questionable order.
+- The schema grammar highlights `|` in type expressions (aliases, field types, enum variant payloads).
+
 ## [0.2.0] - 2026-11-18
 
 ### Added

@@ -833,6 +833,7 @@ const schemaGrammar = {
         },
         { match: ">", name: "punctuation.definition.typeparameters.end.nova-schema" },
         { match: r`\[\]`, name: "storage.modifier.array.nova-schema" },
+        { match: r`\|`, name: "keyword.operator.union.nova-schema" },
         { match: r`\?`, name: "storage.modifier.nullable.nova-schema" },
         { match: r`\(`, name: "punctuation.definition.tuple.begin.nova-schema" },
         { match: r`\)`, name: "punctuation.definition.tuple.end.nova-schema" },

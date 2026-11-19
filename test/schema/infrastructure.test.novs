@@ -30,6 +30,12 @@ type Pair = (string, i64)?
 #                    ^^^ support.type.builtin.nova-schema
 #                       ^ punctuation.definition.tuple.end.nova-schema
 #                        ^ storage.modifier.nullable.nova-schema
+type Scalar = string | int @range(0..9) | null
+#             ^^^^^^ support.type.builtin.nova-schema
+#                    ^ keyword.operator.union.nova-schema
+#                          ^ meta.attribute.nova-schema punctuation.definition.attribute.nova-schema
+#                                       ^ keyword.operator.union.nova-schema
+#                                         ^^^^ support.type.builtin.nova-schema
 
 record Service:
 # <------ storage.type.record.nova-schema
@@ -97,7 +103,7 @@ enum Status:                       # also: enum Status = a | b
 #       ^ punctuation.section.parens.begin.nova-schema
 #        ^^^^^^ support.type.builtin.nova-schema
 
-enum Health = up | down(string) | unknown
+enum Health = up | down(string | int) | unknown
 # <---- storage.type.enum.nova-schema
 #    ^^^^^^ entity.name.type.enum.nova-schema
 #           ^ keyword.operator.assignment.nova-schema
@@ -105,7 +111,9 @@ enum Health = up | down(string) | unknown
 #                ^ keyword.operator.union.nova-schema
 #                  ^^^^ constant.other.enum.variant.nova-schema
 #                       ^^^^^^ support.type.builtin.nova-schema
-#                                 ^^^^^^^ constant.other.enum.variant.nova-schema
+#                              ^ keyword.operator.union.nova-schema
+#                                ^^^ support.type.builtin.nova-schema
+#                                       ^^^^^^^ constant.other.enum.variant.nova-schema
 
 record Infrastructure:
   environment: string @id(1)
