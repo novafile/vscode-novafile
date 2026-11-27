@@ -19,6 +19,11 @@ const out = join(dirname(fileURLToPath(import.meta.url)), "..", "syntaxes");
 
 const IDENT = r`[A-Za-z_][A-Za-z0-9_-]*`;
 const QUOTED = r`"(?:[^"\\]|\\.)*"`;
+// A schema name (§6.7): qualified (`novafile.dev/std`) or local (`pddl`, `infra/net`).
+const SCHEMA_NAME = r`[A-Za-z0-9][A-Za-z0-9._-]*(?:/[A-Za-z0-9][A-Za-z0-9._-]*)*`;
+const VERSION = r`[0-9]+\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.+-]*)?`;
+// Attributes on a definition head: `@open`, `@secret`, `@one_of(a, b)`.
+const HEAD_ATTRS = r`((?:\s+@[A-Za-z_][A-Za-z0-9_-]*(?:\([^)]*\))?)*)`;
 // Characters that end a flow word (§4.7).
 const DELIM = r`\s,\[\]{}()"`;
 // Not preceded by a character that could be part of a flow word.
@@ -380,7 +385,7 @@ const dataDirectives = {
   patterns: [
     {
       // @schema name@1.2.3#fingerprint
-      match: r`^(@)(schema)(?=\s|$)(?:\s+(${IDENT})(@)([0-9]+\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.+-]*)?)?(?:(#)([0-9A-Fa-f]+))?)?`,
+      match: r`^(@)(schema)(?=\s|$)(?:\s+(${SCHEMA_NAME})(@)(${VERSION})?(?:(#)([0-9A-Fa-f]+))?)?`,
       captures: {
         ...directiveName("schema"),
         3: { name: "entity.name.type.schema.nova" },
@@ -712,6 +717,21 @@ const schemaGrammar = {
         3: { name: "entity.name.type.nova-schema" },
       },
     },
+    {
+      // @import name@version[#fingerprint] as alias (proposal 0008)
+      match: r`^(@)(import)\s+(${SCHEMA_NAME})(@)(${VERSION})(?:(#)([0-9A-Fa-f]+))?(?:\s+(as)\s+(${IDENT}))?`,
+      captures: {
+        1: { name: "punctuation.definition.directive.nova" },
+        2: { name: "keyword.control.directive.nova" },
+        3: { name: "entity.name.type.schema.nova" },
+        4: { name: "punctuation.separator.version.nova" },
+        5: { name: "constant.numeric.version.nova" },
+        6: { name: "punctuation.separator.fingerprint.nova" },
+        7: { name: "constant.other.fingerprint.nova" },
+        8: { name: "keyword.control.as.nova" },
+        9: { name: "variable.other.constant.nova" },
+      },
+    },
     { include: "source.nova#data-directives" },
     { include: "#record" },
     { include: "#enum" },
@@ -721,19 +741,21 @@ const schemaGrammar = {
   ],
   repository: {
     record: {
-      match: r`^(record)\s+(${IDENT})((?:\s+@open)*)\s*(:)`,
+      match: r`^(record)\s+(${IDENT})${HEAD_ATTRS}\s*(:)`,
       captures: {
         1: { name: "storage.type.record.nova-schema" },
         2: { name: "entity.name.type.record.nova-schema" },
         3: {
           patterns: [
             {
-              match: r`(@)(open)`,
+              match: r`(@)(open)\b`,
               captures: {
                 0: { name: "storage.modifier.open.nova-schema" },
                 1: { name: "punctuation.definition.attribute.nova-schema" },
               },
             },
+            // Classes (@secret, @personal; proposal 0009) and record rules.
+            { include: "#attribute" },
           ],
         },
         4: { name: "punctuation.separator.key-value.nova-schema" },
@@ -741,21 +763,24 @@ const schemaGrammar = {
     },
     enum: {
       patterns: [
+        // The head may carry a class: enum Level @personal: (proposal 0009).
         {
-          match: r`^(enum)\s+(${IDENT})\s*(:)`,
+          match: r`^(enum)\s+(${IDENT})${HEAD_ATTRS}\s*(:)`,
           captures: {
             1: { name: "storage.type.enum.nova-schema" },
             2: { name: "entity.name.type.enum.nova-schema" },
-            3: { name: "punctuation.separator.key-value.nova-schema" },
+            3: { patterns: [{ include: "#attribute" }] },
+            4: { name: "punctuation.separator.key-value.nova-schema" },
           },
         },
         {
-          begin: r`^(enum)\s+(${IDENT})\s*(=)`,
+          begin: r`^(enum)\s+(${IDENT})${HEAD_ATTRS}\s*(=)`,
           end: "$",
           beginCaptures: {
             1: { name: "storage.type.enum.nova-schema" },
             2: { name: "entity.name.type.enum.nova-schema" },
-            3: { name: "keyword.operator.assignment.nova-schema" },
+            3: { patterns: [{ include: "#attribute" }] },
+            4: { name: "keyword.operator.assignment.nova-schema" },
           },
           patterns: [
             { include: "source.nova#comment" },
@@ -846,6 +871,15 @@ const schemaGrammar = {
         { match: r`\(`, name: "punctuation.definition.tuple.begin.nova-schema" },
         { match: r`\)`, name: "punctuation.definition.tuple.end.nova-schema" },
         { match: ",", name: "punctuation.separator.comma.nova-schema" },
+        {
+          // alias.Name: a definition of an imported schema (proposal 0008).
+          match: r`(${IDENT})(\.)(${IDENT})`,
+          captures: {
+            1: { name: "entity.name.namespace.nova-schema" },
+            2: { name: "punctuation.accessor.nova-schema" },
+            3: { name: "entity.name.type.nova-schema" },
+          },
+        },
         { match: IDENT, name: "entity.name.type.nova-schema" },
       ],
     },
@@ -868,6 +902,8 @@ const schemaGrammar = {
               match: r`\b(?:scalars|utf8|utf16|graphemes)\b`,
               name: "support.constant.unit.nova-schema",
             },
+            // The fields of a record rule: @one_of(url, url_file) (proposal 0010).
+            { match: IDENT, name: "variable.other.property.nova-schema" },
             {
               match: r`-?(?:0|[1-9][0-9]*)(?:/[1-9][0-9]*|(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)`,
               name: "constant.numeric.nova-schema",

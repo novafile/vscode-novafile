@@ -1,0 +1,32 @@
+# SYNTAX TEST "source.nova.schema" "schema names, imports, qualified types, record rules and classes"
+@schema novafile.dev/net@1.0.0
+#       ^^^^^^^^^^^^^^^^ entity.name.type.schema.nova
+#                        ^^^^^ constant.numeric.version.nova
+@import novafile.dev/std@0.2.0#0123abcd as std
+#       ^^^^^^^^^^^^^^^^ entity.name.type.schema.nova
+#                        ^^^^^ constant.numeric.version.nova
+#                              ^^^^^^^^ constant.other.fingerprint.nova
+#                                       ^^ keyword.control.as.nova
+#                                          ^^^ variable.other.constant.nova
+record Db @secret @one_of(url, url_file):
+#      ^^ entity.name.type.record.nova-schema
+#          ^^^^^^ entity.other.attribute-name.nova-schema
+#                  ^^^^^^ entity.other.attribute-name.nova-schema
+#                         ^^^ variable.other.property.nova-schema
+#                              ^^^^^^^^ variable.other.property.nova-schema
+  url?: std.Url
+#       ^^^ entity.name.namespace.nova-schema
+#          ^ punctuation.accessor.nova-schema
+#           ^^^ entity.name.type.nova-schema
+  url_file?: string
+record Open @open:
+#           ^^^^^ storage.modifier.open.nova-schema
+enum Level @personal = low | high
+#    ^^^^^ entity.name.type.enum.nova-schema
+#           ^^^^^^^^ entity.other.attribute-name.nova-schema
+#                      ^^^ constant.other.enum.variant.nova-schema
+enum Kind @secret:
+#    ^^^^ entity.name.type.enum.nova-schema
+#          ^^^^^^ entity.other.attribute-name.nova-schema
+  a
+# ^ constant.other.enum.variant.nova-schema
