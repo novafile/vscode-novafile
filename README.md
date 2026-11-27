@@ -104,6 +104,14 @@ Press <kbd>F5</kbd> in VS Code to start an Extension Development Host.
 
 The TextMate grammars in `syntaxes/` are generated from `scripts/build-grammars.mjs`, which keeps the regular expressions readable. Edit that file, then run `yarn build:grammars` and commit both. Grammar tests live in `test/`. Each file starts with a `# SYNTAX TEST "<scope>"` header, and lines with `^` or `<-` markers assert the scopes of the source line above them.
 
+### Releasing
+
+1. Bump `version` in `package.json` and date the changelog section, in a PR.
+2. After it is merged, tag the merge commit on `main`: `git tag -s vX.Y.Z -m "vscode-novafile X.Y.Z"`, then push the tag. CI checks that the tag matches `package.json`, packages and attests the `.vsix`, and creates the GitHub Release.
+3. The release job then starts `.github/workflows/publish.yml`, which waits for approval in the `marketplace` environment. Once approved, it downloads the release's `.vsix`, verifies its attestation and version, and publishes it to the Marketplace with trusted publishing (`vsce publish --oidc`). No token is stored.
+
+To publish an existing release, run `gh workflow run publish.yml -f tag=vX.Y.Z`. A version that is already on the Marketplace is skipped.
+
 ## Links
 
 - Website: <https://novafile.dev/>

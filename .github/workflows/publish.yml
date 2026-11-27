@@ -1,0 +1,85 @@
+name: Publish
+
+# Publishes a released .vsix to the Visual Studio Marketplace with trusted
+# publishing: the job's GitHub OIDC token is exchanged for a Marketplace
+# credential that expires after 15 minutes, so no token is stored anywhere.
+#
+# CI's release job dispatches this for every new tag. Run it by hand to
+# publish an existing release:
+#
+#   gh workflow run publish.yml -f tag=v0.4.0
+#
+# The Marketplace's Trusted Publishing policy for the `novafile` publisher
+# names this file and the `marketplace` environment. That environment only
+# runs on `main` and waits for a maintainer's approval.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to publish (vX.Y.Z)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: marketplace
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: marketplace
+    permissions:
+      contents: read # download the release asset
+      id-token: write # exchanged for the Marketplace credential
+    steps:
+      - name: Check the tag
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          if ! [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::not a release tag: $TAG"
+            exit 1
+          fi
+
+      # The vsce from the lockfile, not an unpinned npx download.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26
+          package-manager-cache: false
+
+      - name: Enable corepack
+        run: npm install --global corepack@0.36.0 && corepack enable # zizmor: ignore[adhoc-packages]
+
+      # This job can mint a publishing credential, so no dependency may run an
+      # install script here; vsce itself needs none.
+      - name: Install vsce
+        env:
+          YARN_ENABLE_SCRIPTS: "0"
+        run: yarn install --immutable
+
+      # Publish exactly the .vsix that CI built and attested for this tag.
+      - name: Verify and publish the release's .vsix
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          vsix="vscode-novafile-${TAG#v}.vsix"
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "$vsix" --dir dist
+          gh attestation verify "dist/$vsix" --repo "$GITHUB_REPOSITORY" \
+            --signer-workflow "$GITHUB_REPOSITORY/.github/workflows/ci.yml" \
+            --source-ref "refs/tags/$TAG" \
+            --deny-self-hosted-runners
+          version=$(unzip -p "dist/$vsix" extension/package.json | node -p 'JSON.parse(require("fs").readFileSync(0, "utf8")).version')
+          if [ "v$version" != "$TAG" ]; then
+            echo "::error::$vsix is version $version, not $TAG"
+            exit 1
+          fi
+          yarn vsce publish --packagePath "dist/$vsix" --oidc --skip-duplicate
