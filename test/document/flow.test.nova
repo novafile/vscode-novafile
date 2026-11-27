@@ -70,3 +70,9 @@ multi: [
 # <- meta.flow.list.nova punctuation.definition.list.end.nova
 after_flow: [1]#comment right after a flow value
 #              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ comment.line.number-sign.nova
+op: !"at start"([at, depot])
+#   ^ constant.other.enum.variant.nova punctuation.definition.variant.nova
+#    ^^^^^^^^^^ constant.other.enum.variant.nova
+eq: [!"=", !"a\"b"(1)]
+#    ^^^^ constant.other.enum.variant.nova
+#          ^^^^^^^ constant.other.enum.variant.nova

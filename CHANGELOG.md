@@ -4,6 +4,10 @@ All notable changes to the NOVA extension are documented here. The format follow
 
 ## [Unreleased]
 
+### Added
+
+- Quoted variant tags (`!"at start"(…)`, `!"="`) are highlighted as variants in documents, and quoted enum variant names (`enum Op = "="(T) | "at start"(T)`) in schemas, in both enum forms.
+
 ## [0.3.0] - 2026-11-19
 
 ### Changed

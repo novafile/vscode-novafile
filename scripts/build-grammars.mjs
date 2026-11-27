@@ -492,8 +492,9 @@ const templateDirectives = {
 const sharedDocRules = {
   comment,
   comma: { match: ",", name: "punctuation.separator.comma.nova" },
+  // !tag, where the tag is an identifier or a quoted string (spec §2.11, §4.7).
   variant: {
-    match: r`(!)(${IDENT})`,
+    match: r`(!)(?:${IDENT}|${QUOTED})`,
     captures: {
       0: { name: "constant.other.enum.variant.nova" },
       1: { name: "punctuation.definition.variant.nova" },
@@ -786,24 +787,28 @@ const schemaGrammar = {
       name: "meta.field.nova-schema",
       patterns: [{ include: "#field-tail" }],
     },
+    // A block-form enum variant line. Quoted field lines (`"x": T`) match #field first.
     "variant-line": {
-      begin: r`^\s+(?=[A-Za-z_])`,
+      begin: r`^\s+(?=[A-Za-z_"])`,
       end: "$",
       patterns: [{ include: "source.nova#comment" }, { include: "#variant" }],
     },
+    // A variant name is an identifier or a quoted string, like a field name (spec §6.1).
     variant: {
       patterns: [
         {
-          begin: r`(${IDENT})\s*(\()`,
+          begin: r`(?:(${IDENT})|(${QUOTED}))\s*(\()`,
           end: r`\)`,
           beginCaptures: {
             1: { name: "constant.other.enum.variant.nova-schema" },
-            2: { name: "punctuation.section.parens.begin.nova-schema" },
+            2: { name: "constant.other.enum.variant.nova-schema string.quoted.double.nova" },
+            3: { name: "punctuation.section.parens.begin.nova-schema" },
           },
           endCaptures: { 0: { name: "punctuation.section.parens.end.nova-schema" } },
           patterns: [{ include: "#type" }],
         },
         { match: IDENT, name: "constant.other.enum.variant.nova-schema" },
+        { match: QUOTED, name: "constant.other.enum.variant.nova-schema string.quoted.double.nova" },
       ],
     },
     // Everything after `name:` in a field, alias or @param: type, attributes, default.

@@ -44,7 +44,7 @@
       "name": "punctuation.separator.comma.nova"
     },
     "variant": {
-      "match": "(!)([A-Za-z_][A-Za-z0-9_-]*)",
+      "match": "(!)(?:[A-Za-z_][A-Za-z0-9_-]*|\"(?:[^\"\\\\]|\\\\.)*\")",
       "captures": {
         "0": {
           "name": "constant.other.enum.variant.nova"
