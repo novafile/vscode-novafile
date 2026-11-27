@@ -6,6 +6,7 @@ All notable changes to the NOVA extension are documented here. The format follow
 
 ### Added
 
+- Template language 0.2 (proposal 0006): calls (`$lower($x)`, and `${upper(name)}` in interpolations), `$( … )`, comparison and arithmetic operators, comprehensions (`[for x in $xs if …: …]`, `{for k, v in $m: …}`) and `@def` functions are highlighted, in value positions that begin with `$`, conditions, `@for` sources and interpolations.
 - Schemas: qualified schema names (`@schema novafile.dev/std@0.2.0`, also in data documents), `@import name@version[#fingerprint] as alias`, imported types (`std.Uuid`), record rules (`@one_of(a, b)`, `@together`, `@any_of`) and classes on `record` and `enum` heads (`@secret`, `@personal`) are highlighted. Before, a qualified name or an attribute other than `@open` left the whole line unhighlighted.
 - Quoted variant tags (`!"at start"(…)`, `!"="`) are highlighted as variants in documents, and quoted enum variant names (`enum Op = "="(T) | "at start"(T)`) in schemas, in both enum forms.
 
