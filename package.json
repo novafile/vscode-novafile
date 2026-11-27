@@ -2,7 +2,7 @@
   "name": "vscode-novafile",
   "displayName": "NOVA Notation for Objects, Values & Agents",
   "description": "Language support for NOVA (Notation for Objects, Values & Agents): documents, schemas (.novs), templates and patches, with syntax highlighting and the nvf-lsp language server.",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "publisher": "novafile",
   "icon": "images/icon.png",
   "license": "(EUPL-1.2 OR MPL-2.0) AND Apache-2.0",

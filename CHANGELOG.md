@@ -4,6 +4,8 @@ All notable changes to the NOVA extension are documented here. The format follow
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-27
+
 ### Changed
 
 - Bundled `nvf-lsp` updated from 0.3.0 to 0.8.0, which understands what the highlighting below covers: string patterns and literal types, qualified schema names, catalogs and schema lookup, schema imports and the standard library (`std` 0.2.0 with `std.Url`), classified values and redaction, schema documentation, record rules and partial validation, template language 0.2, and quoted variant tags. See the nova release notes for 0.4.0 to 0.8.0.
@@ -42,7 +44,8 @@ All notable changes to the NOVA extension are documented here. The format follow
 - Language client for the `nvf-lsp` server (diagnostics, hover, document symbols, completion, formatting), with the settings `novafile.server.path`, `novafile.server.args`, `novafile.server.enable` and `novafile.trace.server`, plus install instructions when the binary is missing.
 - Commands **NOVA: Restart Language Server** and **NOVA: Show Language Server Output**.
 
-[Unreleased]: https://github.com/novafile/vscode-novafile/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/novafile/vscode-novafile/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/novafile/vscode-novafile/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/novafile/vscode-novafile/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/novafile/vscode-novafile/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/novafile/vscode-novafile/releases/tag/v0.1.0
