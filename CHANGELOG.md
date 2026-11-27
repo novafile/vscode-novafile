@@ -4,6 +4,10 @@ All notable changes to the NOVA extension are documented here. The format follow
 
 ## [Unreleased]
 
+### Changed
+
+- Bundled `nvf-lsp` updated from 0.3.0 to 0.8.0, which understands what the highlighting below covers: string patterns and literal types, qualified schema names, catalogs and schema lookup, schema imports and the standard library (`std` 0.2.0 with `std.Url`), classified values and redaction, schema documentation, record rules and partial validation, template language 0.2, and quoted variant tags. See the nova release notes for 0.4.0 to 0.8.0.
+
 ### Added
 
 - Template language 0.2 (proposal 0006): calls (`$lower($x)`, and `${upper(name)}` in interpolations), `$( … )`, comparison and arithmetic operators, comprehensions (`[for x in $xs if …: …]`, `{for k, v in $m: …}`) and `@def` functions are highlighted, in value positions that begin with `$`, conditions, `@for` sources and interpolations.
