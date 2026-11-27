@@ -1,0 +1,22 @@
+# SYNTAX TEST "source.nova.schema" "quoted variant names (spec §6.1)"
+enum Op = and(list<Op>) | "="((int, int)) | "at start"(Op)
+#         ^^^ constant.other.enum.variant.nova-schema
+#                         ^^^ constant.other.enum.variant.nova-schema string.quoted.double.nova
+#                            ^ punctuation.section.parens.begin.nova-schema
+#                                           ^^^^^^^^^^ constant.other.enum.variant.nova-schema string.quoted.double.nova
+
+enum Cmp:
+  "<="
+# ^^^^ constant.other.enum.variant.nova-schema string.quoted.double.nova
+  "at start"(Op)
+# ^^^^^^^^^^ constant.other.enum.variant.nova-schema string.quoted.double.nova
+#           ^ punctuation.section.parens.begin.nova-schema
+  active
+# ^^^^^^ constant.other.enum.variant.nova-schema
+
+record R:
+  "at start": Op
+# ^^^^^^^^^^ variable.other.property.nova-schema string.quoted.double.nova
+#           ^ punctuation.separator.key-value.nova-schema
+  op: Op = !"at start"
+#          ^^^^^^^^^^^ constant.other.enum.variant.nova
