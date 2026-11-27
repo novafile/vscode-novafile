@@ -1,0 +1,40 @@
+# SYNTAX TEST "source.nova" "template language 0.2 expressions (proposal 0006)"
+@template 0.2
+@def label(s: string, n: u16 = 63): string = $slice($lower($s), 0, $n)
+#    ^^^^^ entity.name.function.nova
+#          ^ variable.parameter.nova
+#             ^^^^^^ support.type.builtin.nova-schema
+#                              ^^ constant.numeric.integer.nova
+#                                             ^^^^^ entity.name.function.nova
+#                                                    ^^^^^ entity.name.function.nova
+@def labels(component: string):
+#    ^^^^^^ entity.name.function.nova
+#           ^^^^^^^^^ variable.parameter.nova
+  app: $component
+port: $base + 1 * 2
+#           ^ keyword.operator.arithmetic.nova
+#               ^ keyword.operator.arithmetic.nova
+plain: 1 + $base
+#        ^ - keyword.operator.arithmetic.nova
+dash: $x-1
+#     ^^^^ variable.other.reference.nova
+calc: $(1 + $base)
+#     ^ punctuation.definition.variable.nova
+#         ^ keyword.operator.arithmetic.nova
+name: "${upper($n)}-svc ${join($tags, ",")}"
+#        ^^^^^ entity.name.function.nova
+#                         ^^^^ entity.name.function.nova
+#                                     ^^^ string.quoted.double.nova
+#                  ^^^^ string.quoted.double.nova - meta.embedded.interpolation.nova
+ports: $([for p in $ports if $p > 0: $p * 2])
+#         ^^^ keyword.control.loop.for.nova
+#             ^ variable.other.loop.nova
+#               ^^ keyword.control.in.nova
+#                         ^^ keyword.control.conditional.nova
+#                               ^ keyword.operator.comparison.nova
+#                                       ^ keyword.operator.arithmetic.nova
+@if $a >= 2 and not $b:
+#      ^^ keyword.operator.comparison.nova
+#           ^^^ keyword.operator.logical.nova
+#               ^^^ keyword.operator.logical.nova
+  x: 1

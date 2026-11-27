@@ -80,7 +80,9 @@ function documentRules(tpl) {
       endCaptures: { 0: { name: "punctuation.section.interpolation.end.nova" } },
       name: "meta.embedded.interpolation.nova",
       contentName: "variable.other.interpolation.nova",
-      patterns: [{ include: "#path" }],
+      // In template language 0.2 the content is an expression, and a leading
+      // identifier implies `$`: `${name}`, `${lower($x)}`, `${$a + 1}`.
+      patterns: [{ include: "#bare-call" }, { include: "#expression" }, { include: "#path" }],
     },
   ];
   add("string", {
@@ -105,7 +107,15 @@ function documentRules(tpl) {
       inc("record"),
       inc("tuple"),
       { include: "#variant" },
-      ...(tpl ? [{ include: "#spread" }, { include: "#reference" }] : []),
+      ...(tpl
+        ? [
+            { include: "#spread" },
+            { include: "#call" },
+            { include: "#dollar-group" },
+            { include: "#reference" },
+            { include: "#expression-operator" },
+          ]
+        : []),
       { include: "#flow-scalar" },
     ],
   });
@@ -190,6 +200,18 @@ function documentRules(tpl) {
   add("inline-value", {
     patterns: [
       { include: "#comment" },
+      // In templates, a value that begins with `$` is an expression up to the
+      // end of the value (proposal 0006 §0006.2.1): `port: $base + 1`.
+      ...(tpl
+        ? [
+            {
+              begin: r`(?<=\s)(?=\$)`,
+              end: r`(?=\s+#|$)`,
+              name: "meta.expression.nova",
+              patterns: [{ include: "#expression" }, { include: "#expression-operator" }],
+            },
+          ]
+        : []),
       { include: "#inline-scalar" },
       inc("flow-value"),
     ],
@@ -308,7 +330,7 @@ function documentRules(tpl) {
                 4: { name: "keyword.control.in.nova" },
               },
             },
-            { include: "#flow-value-tpl" },
+            { include: "#expression" },
           ],
         },
         {
@@ -333,6 +355,9 @@ function documentRules(tpl) {
       patterns: [
         { match: r`==|!=`, name: "keyword.operator.comparison.nova" },
         { match: r`(?<![\w-])(?:and|or|not)(?![\w-])`, name: "keyword.operator.logical.nova" },
+        { include: "#call" },
+        { include: "#dollar-group" },
+        { include: "#expression-operator" },
         {
           begin: r`\(`,
           end: r`\)`,
@@ -342,6 +367,92 @@ function documentRules(tpl) {
           patterns: [{ include: "#condition" }],
         },
         { include: "#flow-value-tpl" },
+      ],
+    };
+
+    // Template language 0.2 expressions (proposal 0006): operators are words
+    // or symbols with whitespace around them, so `$x-1` stays one reference.
+    rules["expression"] = {
+      patterns: [
+        { include: "#comprehension" },
+        {
+          begin: r`\(`,
+          end: r`\)`,
+          beginCaptures: { 0: { name: "punctuation.section.group.begin.nova" } },
+          endCaptures: { 0: { name: "punctuation.section.group.end.nova" } },
+          name: "meta.group.nova",
+          patterns: [{ include: "#expression" }],
+        },
+        { match: r`(?<![\w-])(?:and|or|not)(?![\w-])`, name: "keyword.operator.logical.nova" },
+        { include: "#flow-value-tpl" },
+      ],
+    };
+    rules["expression-operator"] = {
+      patterns: [
+        { match: r`(?<=\s)(?:==|!=|<=|>=|<|>)(?=\s)`, name: "keyword.operator.comparison.nova" },
+        { match: r`(?<=\s)[-+*](?=\s)`, name: "keyword.operator.arithmetic.nova" },
+      ],
+    };
+    // $name(arg, …): a call, with `(` directly after the name
+    rules["call"] = {
+      begin: r`(\$)(${IDENT})(\()`,
+      end: r`\)`,
+      beginCaptures: {
+        1: { name: "punctuation.definition.variable.nova" },
+        2: { name: "entity.name.function.nova" },
+        3: { name: "punctuation.section.arguments.begin.nova" },
+      },
+      endCaptures: { 0: { name: "punctuation.section.arguments.end.nova" } },
+      name: "meta.function-call.nova",
+      patterns: [{ include: "#expression" }],
+    };
+    // name(arg, …) at the head of an interpolation, where `$` is implied
+    rules["bare-call"] = {
+      begin: r`\G\s*(${IDENT})(\()`,
+      end: r`\)`,
+      beginCaptures: {
+        1: { name: "entity.name.function.nova" },
+        2: { name: "punctuation.section.arguments.begin.nova" },
+      },
+      endCaptures: { 0: { name: "punctuation.section.arguments.end.nova" } },
+      name: "meta.function-call.nova",
+      patterns: [{ include: "#expression" }],
+    };
+    // $( … ): grouping that starts an expression in a value position
+    rules["dollar-group"] = {
+      begin: r`(\$)(\()`,
+      end: r`\)`,
+      beginCaptures: {
+        1: { name: "punctuation.definition.variable.nova" },
+        2: { name: "punctuation.section.group.begin.nova" },
+      },
+      endCaptures: { 0: { name: "punctuation.section.group.end.nova" } },
+      name: "meta.group.nova",
+      patterns: [{ include: "#expression" }],
+    };
+    // [for i, x in SOURCE if CONDITION: VALUE]   {for k, v in SOURCE: KEY: VALUE}
+    rules["comprehension"] = {
+      begin: r`([\[{])(for)(?=\s)`,
+      end: r`[\]}]`,
+      beginCaptures: {
+        1: { name: "punctuation.definition.comprehension.begin.nova" },
+        2: { name: "keyword.control.loop.for.nova" },
+      },
+      endCaptures: { 0: { name: "punctuation.definition.comprehension.end.nova" } },
+      name: "meta.comprehension.nova",
+      patterns: [
+        {
+          match: r`\G\s+(${IDENT})(?:\s*(,)\s*(${IDENT}))?\s+(in)(?=\s)`,
+          captures: {
+            1: { name: "variable.other.loop.nova" },
+            2: { name: "punctuation.separator.comma.nova" },
+            3: { name: "variable.other.loop.nova" },
+            4: { name: "keyword.control.in.nova" },
+          },
+        },
+        { match: r`(?<=\s)if(?=\s)`, name: "keyword.control.conditional.nova" },
+        { match: r`:(?=\s)`, name: "punctuation.separator.key-value.nova" },
+        { include: "#expression" },
       ],
     };
     rules["spread-entry"] = {
@@ -490,6 +601,56 @@ const templateDirectives = {
       },
       name: "meta.directive.let.nova",
       patterns: [{ include: "#inline-value-tpl" }],
+    },
+    {
+      // @def name(p: T, q: T = d)[: R] = expression   |   @def name(p: T)[: R]:
+      // (template language 0.2, proposal 0006)
+      begin: r`^(@)(def)\s+(${IDENT})(?=\()`,
+      end: "$",
+      beginCaptures: {
+        1: { name: "punctuation.definition.directive.nova" },
+        2: { name: "keyword.control.directive.nova" },
+        3: { name: "entity.name.function.nova" },
+      },
+      name: "meta.directive.def.nova",
+      patterns: [
+        { include: "#comment" },
+        {
+          begin: r`\(`,
+          end: r`\)`,
+          beginCaptures: { 0: { name: "punctuation.section.parameters.begin.nova" } },
+          endCaptures: { 0: { name: "punctuation.section.parameters.end.nova" } },
+          name: "meta.parameters.nova",
+          patterns: [
+            {
+              match: r`(${IDENT})\s*(:)`,
+              captures: {
+                1: { name: "variable.parameter.nova" },
+                2: { name: "punctuation.separator.key-value.nova" },
+              },
+            },
+            {
+              // A default: up to the next parameter or the end of the list.
+              begin: r`(?<=\s)(=)(?=\s)`,
+              end: r`(?=[,)])`,
+              beginCaptures: { 1: { name: "keyword.operator.assignment.nova" } },
+              patterns: [{ include: "#expression" }],
+            },
+            { include: "#comma" },
+            { include: "source.nova.schema#type" },
+          ],
+        },
+        {
+          // `= expression` (the flow form)
+          begin: r`(?<=\s)(=)(?=\s)`,
+          end: r`(?=$)`,
+          beginCaptures: { 1: { name: "keyword.operator.assignment.nova" } },
+          patterns: [{ include: "#expression" }],
+        },
+        { match: r`:(?=\s*(?:#|$))`, name: "punctuation.separator.key-value.nova" },
+        { match: ":", name: "punctuation.separator.type.nova" },
+        { include: "source.nova.schema#type" },
+      ],
     },
   ],
 };

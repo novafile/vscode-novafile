@@ -413,6 +413,100 @@
               "include": "#inline-value-tpl"
             }
           ]
+        },
+        {
+          "begin": "^(@)(def)\\s+([A-Za-z_][A-Za-z0-9_-]*)(?=\\()",
+          "end": "$",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.directive.nova"
+            },
+            "2": {
+              "name": "keyword.control.directive.nova"
+            },
+            "3": {
+              "name": "entity.name.function.nova"
+            }
+          },
+          "name": "meta.directive.def.nova",
+          "patterns": [
+            {
+              "include": "#comment"
+            },
+            {
+              "begin": "\\(",
+              "end": "\\)",
+              "beginCaptures": {
+                "0": {
+                  "name": "punctuation.section.parameters.begin.nova"
+                }
+              },
+              "endCaptures": {
+                "0": {
+                  "name": "punctuation.section.parameters.end.nova"
+                }
+              },
+              "name": "meta.parameters.nova",
+              "patterns": [
+                {
+                  "match": "([A-Za-z_][A-Za-z0-9_-]*)\\s*(:)",
+                  "captures": {
+                    "1": {
+                      "name": "variable.parameter.nova"
+                    },
+                    "2": {
+                      "name": "punctuation.separator.key-value.nova"
+                    }
+                  }
+                },
+                {
+                  "begin": "(?<=\\s)(=)(?=\\s)",
+                  "end": "(?=[,)])",
+                  "beginCaptures": {
+                    "1": {
+                      "name": "keyword.operator.assignment.nova"
+                    }
+                  },
+                  "patterns": [
+                    {
+                      "include": "#expression"
+                    }
+                  ]
+                },
+                {
+                  "include": "#comma"
+                },
+                {
+                  "include": "source.nova.schema#type"
+                }
+              ]
+            },
+            {
+              "begin": "(?<=\\s)(=)(?=\\s)",
+              "end": "(?=$)",
+              "beginCaptures": {
+                "1": {
+                  "name": "keyword.operator.assignment.nova"
+                }
+              },
+              "patterns": [
+                {
+                  "include": "#expression"
+                }
+              ]
+            },
+            {
+              "match": ":(?=\\s*(?:#|$))",
+              "name": "punctuation.separator.key-value.nova"
+            },
+            {
+              "match": ":",
+              "name": "punctuation.separator.type.nova"
+            },
+            {
+              "include": "source.nova.schema#type"
+            }
+          ]
         }
       ]
     },
@@ -880,6 +974,12 @@
           "contentName": "variable.other.interpolation.nova",
           "patterns": [
             {
+              "include": "#bare-call"
+            },
+            {
+              "include": "#expression"
+            },
+            {
               "include": "#path"
             }
           ]
@@ -908,6 +1008,12 @@
           "name": "meta.embedded.interpolation.nova",
           "contentName": "variable.other.interpolation.nova",
           "patterns": [
+            {
+              "include": "#bare-call"
+            },
+            {
+              "include": "#expression"
+            },
             {
               "include": "#path"
             }
@@ -948,7 +1054,16 @@
           "include": "#spread"
         },
         {
+          "include": "#call"
+        },
+        {
+          "include": "#dollar-group"
+        },
+        {
           "include": "#reference"
+        },
+        {
+          "include": "#expression-operator"
         },
         {
           "include": "#flow-scalar"
@@ -1133,6 +1248,19 @@
       "patterns": [
         {
           "include": "#comment"
+        },
+        {
+          "begin": "(?<=\\s)(?=\\$)",
+          "end": "(?=\\s+#|$)",
+          "name": "meta.expression.nova",
+          "patterns": [
+            {
+              "include": "#expression"
+            },
+            {
+              "include": "#expression-operator"
+            }
+          ]
         },
         {
           "include": "#inline-scalar"
@@ -1333,7 +1461,7 @@
               }
             },
             {
-              "include": "#flow-value-tpl"
+              "include": "#expression"
             }
           ]
         },
@@ -1382,6 +1510,15 @@
           "name": "keyword.operator.logical.nova"
         },
         {
+          "include": "#call"
+        },
+        {
+          "include": "#dollar-group"
+        },
+        {
+          "include": "#expression-operator"
+        },
+        {
           "begin": "\\(",
           "end": "\\)",
           "beginCaptures": {
@@ -1403,6 +1540,172 @@
         },
         {
           "include": "#flow-value-tpl"
+        }
+      ]
+    },
+    "expression": {
+      "patterns": [
+        {
+          "include": "#comprehension"
+        },
+        {
+          "begin": "\\(",
+          "end": "\\)",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.section.group.begin.nova"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.section.group.end.nova"
+            }
+          },
+          "name": "meta.group.nova",
+          "patterns": [
+            {
+              "include": "#expression"
+            }
+          ]
+        },
+        {
+          "match": "(?<![\\w-])(?:and|or|not)(?![\\w-])",
+          "name": "keyword.operator.logical.nova"
+        },
+        {
+          "include": "#flow-value-tpl"
+        }
+      ]
+    },
+    "expression-operator": {
+      "patterns": [
+        {
+          "match": "(?<=\\s)(?:==|!=|<=|>=|<|>)(?=\\s)",
+          "name": "keyword.operator.comparison.nova"
+        },
+        {
+          "match": "(?<=\\s)[-+*](?=\\s)",
+          "name": "keyword.operator.arithmetic.nova"
+        }
+      ]
+    },
+    "call": {
+      "begin": "(\\$)([A-Za-z_][A-Za-z0-9_-]*)(\\()",
+      "end": "\\)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.variable.nova"
+        },
+        "2": {
+          "name": "entity.name.function.nova"
+        },
+        "3": {
+          "name": "punctuation.section.arguments.begin.nova"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.arguments.end.nova"
+        }
+      },
+      "name": "meta.function-call.nova",
+      "patterns": [
+        {
+          "include": "#expression"
+        }
+      ]
+    },
+    "bare-call": {
+      "begin": "\\G\\s*([A-Za-z_][A-Za-z0-9_-]*)(\\()",
+      "end": "\\)",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.function.nova"
+        },
+        "2": {
+          "name": "punctuation.section.arguments.begin.nova"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.arguments.end.nova"
+        }
+      },
+      "name": "meta.function-call.nova",
+      "patterns": [
+        {
+          "include": "#expression"
+        }
+      ]
+    },
+    "dollar-group": {
+      "begin": "(\\$)(\\()",
+      "end": "\\)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.variable.nova"
+        },
+        "2": {
+          "name": "punctuation.section.group.begin.nova"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.group.end.nova"
+        }
+      },
+      "name": "meta.group.nova",
+      "patterns": [
+        {
+          "include": "#expression"
+        }
+      ]
+    },
+    "comprehension": {
+      "begin": "([\\[{])(for)(?=\\s)",
+      "end": "[\\]}]",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.comprehension.begin.nova"
+        },
+        "2": {
+          "name": "keyword.control.loop.for.nova"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.comprehension.end.nova"
+        }
+      },
+      "name": "meta.comprehension.nova",
+      "patterns": [
+        {
+          "match": "\\G\\s+([A-Za-z_][A-Za-z0-9_-]*)(?:\\s*(,)\\s*([A-Za-z_][A-Za-z0-9_-]*))?\\s+(in)(?=\\s)",
+          "captures": {
+            "1": {
+              "name": "variable.other.loop.nova"
+            },
+            "2": {
+              "name": "punctuation.separator.comma.nova"
+            },
+            "3": {
+              "name": "variable.other.loop.nova"
+            },
+            "4": {
+              "name": "keyword.control.in.nova"
+            }
+          }
+        },
+        {
+          "match": "(?<=\\s)if(?=\\s)",
+          "name": "keyword.control.conditional.nova"
+        },
+        {
+          "match": ":(?=\\s)",
+          "name": "punctuation.separator.key-value.nova"
+        },
+        {
+          "include": "#expression"
         }
       ]
     },
