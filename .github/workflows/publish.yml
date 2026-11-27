@@ -1,17 +1,19 @@
 name: Publish
 
-# Publishes a released .vsix to the Visual Studio Marketplace with trusted
-# publishing: the job's GitHub OIDC token is exchanged for a Marketplace
-# credential that expires after 15 minutes, so no token is stored anywhere.
+# Publishes a released .vsix to the Visual Studio Marketplace and Open VSX
+# with trusted publishing: the job's GitHub OIDC token is exchanged for a
+# short-lived credential of each registry, so no token is stored anywhere.
 #
 # CI's release job dispatches this for every new tag. Run it by hand to
 # publish an existing release:
 #
 #   gh workflow run publish.yml -f tag=v0.4.0
 #
-# The Marketplace's Trusted Publishing policy for the `novafile` publisher
-# names this file and the `marketplace` environment. That environment only
-# runs on `main` and waits for a maintainer's approval.
+# The Marketplace's Trusted Publishing policy (publisher `novafile`) and the
+# Open VSX trusted publisher (namespace `novafile`) both name this file and
+# the `marketplace` environment. That environment only runs on `main` and
+# waits for a maintainer's approval. Both publishes skip a version the
+# registry already has, so a run can be repeated after a partial failure.
 
 on:
   workflow_dispatch:
@@ -34,7 +36,7 @@ jobs:
     environment: marketplace
     permissions:
       contents: read # download the release asset
-      id-token: write # exchanged for the Marketplace credential
+      id-token: write # exchanged for the registries' credentials
     steps:
       - name: Check the tag
         env:
@@ -45,7 +47,7 @@ jobs:
             exit 1
           fi
 
-      # The vsce from the lockfile, not an unpinned npx download.
+      # vsce and ovsx from the lockfile, not unpinned npx downloads.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -58,15 +60,15 @@ jobs:
       - name: Enable corepack
         run: npm install --global corepack@0.36.0 && corepack enable # zizmor: ignore[adhoc-packages]
 
-      # This job can mint a publishing credential, so no dependency may run an
-      # install script here; vsce itself needs none.
-      - name: Install vsce
+      # This job can mint publishing credentials, so no dependency may run an
+      # install script here; vsce and ovsx need none.
+      - name: Install vsce and ovsx
         env:
           YARN_ENABLE_SCRIPTS: "0"
         run: yarn install --immutable
 
       # Publish exactly the .vsix that CI built and attested for this tag.
-      - name: Verify and publish the release's .vsix
+      - name: Download and verify the release's .vsix
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.tag }}
@@ -82,4 +84,10 @@ jobs:
             echo "::error::$vsix is version $version, not $TAG"
             exit 1
           fi
-          yarn vsce publish --packagePath "dist/$vsix" --oidc --skip-duplicate
+          mv "dist/$vsix" dist/release.vsix
+
+      - name: Publish to the Visual Studio Marketplace
+        run: yarn vsce publish --packagePath dist/release.vsix --oidc --skip-duplicate
+
+      - name: Publish to Open VSX
+        run: yarn ovsx publish --packagePath dist/release.vsix --trusted-publishing --skip-duplicate

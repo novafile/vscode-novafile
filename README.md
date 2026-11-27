@@ -54,6 +54,8 @@ Install the extension from the [Visual Studio Marketplace](https://marketplace.v
 ext install novafile.vscode-novafile
 ```
 
+Editors that install from [Open VSX](https://open-vsx.org/extension/novafile/vscode-novafile) instead, such as VSCodium, Cursor or Eclipse Theia, find it there under the same name.
+
 Each [GitHub Release](https://github.com/novafile/vscode-novafile/releases) also carries the `.vsix` with a build provenance attestation; check a download with `gh attestation verify vscode-novafile-X.Y.Z.vsix -R novafile/vscode-novafile`.
 
 ## Language server
@@ -108,9 +110,9 @@ The TextMate grammars in `syntaxes/` are generated from `scripts/build-grammars.
 
 1. Bump `version` in `package.json` and date the changelog section, in a PR.
 2. After it is merged, tag the merge commit on `main`: `git tag -s vX.Y.Z -m "vscode-novafile X.Y.Z"`, then push the tag. CI checks that the tag matches `package.json`, packages and attests the `.vsix`, and creates the GitHub Release.
-3. The release job then starts `.github/workflows/publish.yml`, which waits for approval in the `marketplace` environment. Once approved, it downloads the release's `.vsix`, verifies its attestation and version, and publishes it to the Marketplace with trusted publishing (`vsce publish --oidc`). No token is stored.
+3. The release job then starts `.github/workflows/publish.yml`, which waits for approval in the `marketplace` environment. Once approved, it downloads the release's `.vsix`, verifies its attestation and version, and publishes it to the Visual Studio Marketplace (`vsce publish --oidc`) and to Open VSX (`ovsx publish --trusted-publishing`), both with trusted publishing. No token is stored.
 
-To publish an existing release, run `gh workflow run publish.yml -f tag=vX.Y.Z`. A version that is already on the Marketplace is skipped.
+To publish an existing release, run `gh workflow run publish.yml -f tag=vX.Y.Z`. A version that a registry already has is skipped there, so a run can be repeated after a partial failure.
 
 ## Links
 
