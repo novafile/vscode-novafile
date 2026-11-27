@@ -5,7 +5,7 @@
 # Needs gh, authenticated (GH_TOKEN in CI).
 set -euo pipefail
 
-tag="${1:-v0.3.0}"
+tag="${1:-v0.8.0}"
 asset="nvf-lsp-$tag.wasm"
 dir=".task/nvf-lsp-$tag"
 
